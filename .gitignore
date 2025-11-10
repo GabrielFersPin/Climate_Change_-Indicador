@@ -1,0 +1,27 @@
+# ============================================
+# CLIMATE CHANGE PROJECT - SPECIFIC
+# ============================================
+
+# DATA - NO SUBIR DATASETS GRANDES
+data/*.csv
+data/*.json
+data/*.parquet
+data/*.xlsx
+data/*.db
+data/*.sqlite
+
+# Mantener solo estructura y scripts SQL
+!data/.gitkeep
+!data/README.md
+!data/*.sql
+
+# DOCKER & DATABASES
+postgres_data/
+*.log
+
+# JUPYTER NOTEBOOKS
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# REPORTS
+reports/*.pdf

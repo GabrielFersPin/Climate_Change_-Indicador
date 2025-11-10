@@ -1,0 +1,48 @@
+
+⚠️  CRITICAL LIMITATIONS OF COUNTRY-LEVEL AGGREGATION:
+
+1. GEOGRAPHIC HETEROGENEITY
+   - Large countries (Russia, Canada, China) aggregate vastly different climate zones
+   - Elongated countries (Chile, Argentina) span multiple climatic bands
+   - Mountain ranges create microclimates not captured in national averages
+   
+2. LOSS OF REGIONAL SIGNAL
+   - Arctic regions warming 2-3x faster than tropics
+   - Coastal vs inland temperature differences
+   - Urban heat island effects averaged with rural areas
+   
+3. POTENTIAL BIASES
+   - Weather station distribution may favor populated areas
+   - Historical data quality varies by country
+   - Different baseline periods for some countries
+   
+4. EXAMPLES OF AGGREGATION ISSUES:
+   - Chile: Single value for 4,300 km (desert → ice fields)
+   - Russia: 17M km² with 9 time zones reduced to one number
+   - USA: Alaska to Hawaii aggregated together
+   
+5. RECOMMENDED APPROACH FOR FUTURE ANALYSIS:
+   - Use gridded climate data (e.g., 1°x1° resolution)
+   - Analyze by climate zones (Köppen classification)
+   - Weight by land area and population density
+   - Consider elevation as additional dimension
+   
+6. IMPLICATIONS FOR THIS PROJECT:
+   ✅ Trends and patterns at country level ARE still meaningful
+   ✅ Comparative analysis between countries IS valid
+   ⚠️  Absolute values should be interpreted with caution
+   ⚠️  Regional policy recommendations require finer resolution data
+   
+7. VALIDATION STRATEGY:
+   - Compare results with peer-reviewed literature
+   - Cross-reference with regional climate reports (IPCC)
+   - Acknowledge uncertainty ranges in conclusions
+
+
+             Aspect                         Current Dataset            Ideal for High Precision
+    Data Resolution                           Country-level                 Grid 1°x1° or finer
+  Temporal Coverage                    1961-2022 (62 years)                                Same
+Geographic Coverage                           225 countries                     Global coverage
+  Aggregation Level                        National average                         Pixel-level
+          Precision       Moderate (varies by country size)                                High
+      Best Use Case Global trends, inter-country comparison Regional analysis, climate modeling
