@@ -8,7 +8,7 @@
 
 ## 🎯 Project Overview
 
-This project analyzes climate change indicators from [Kaggle Dataset](link) to:
+This project analyzes climate change indicators from [Kaggle Dataset](https://www.kaggle.com/datasets/tarunrm09/climate-change-indicators) to:
 - Predict global temperature trends using regression models
 - Classify high-risk climate scenarios with logistic regression
 - Segment countries by emission profiles using clustering

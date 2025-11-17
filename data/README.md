@@ -6,7 +6,7 @@ This project uses the **Climate Change Indicators** dataset from Kaggle.
 
 ### Download Instructions
 
-1. Visit [Kaggle - Climate Change Earth Surface Temperature](https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data)
+1. Visit [Kaggle - Climate Change Earth Surface Temperature](https://www.kaggle.com/datasets/tarunrm09/climate-change-indicators)
 2. Download the CSV file(s)
 3. Place it in this directory
 
