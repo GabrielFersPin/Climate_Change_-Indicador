@@ -276,7 +276,7 @@ elif page == "🔍 Phase 2: Exploratory Data Analysis":
         st.markdown('<div class="section-header">Temperature Distribution</div>', unsafe_allow_html=True)
         img_path = load_image("reports/figures/eda_univariate_temperature.png")
         if img_path:
-            st.image(img_path, use_container_width=True)
+            st.image(img_path, use_column_width=True)
         else:
             st.info("Visualization will be available after running the EDA notebook.")
 
@@ -292,7 +292,7 @@ elif page == "🔍 Phase 2: Exploratory Data Analysis":
         st.markdown('<div class="section-header">Temperature Trends Over Time</div>', unsafe_allow_html=True)
         img_path = load_image("reports/figures/eda_temporal_trends.png")
         if img_path:
-            st.image(img_path, use_container_width=True)
+            st.image(img_path, use_column_width=True)
         else:
             st.info("Visualization will be available after running the EDA notebook.")
 
@@ -311,12 +311,12 @@ elif page == "🔍 Phase 2: Exploratory Data Analysis":
         with col1:
             img_path = load_image("reports/figures/eda_geographic_heterogeneity.png")
             if img_path:
-                st.image(img_path, use_container_width=True)
+                st.image(img_path, use_column_width=True)
 
         with col2:
             img_path = load_image("reports/figures/eda_top_countries.png")
             if img_path:
-                st.image(img_path, use_container_width=True)
+                st.image(img_path, use_column_width=True)
 
         st.markdown("**Regional Patterns:**")
         st.markdown("""
@@ -377,7 +377,7 @@ elif page == "📈 Phase 3: Linear Regression":
             st.markdown("**Simple Linear Model**")
             img_path = load_image("reports/figures/regression_model1_simple.png")
             if img_path:
-                st.image(img_path, use_container_width=True)
+                st.image(img_path, use_column_width=True)
             st.markdown("""
             - R² = -1.43 (poor fit on test data)
             - RMSE = 0.26°C
@@ -388,7 +388,7 @@ elif page == "📈 Phase 3: Linear Regression":
             st.markdown("**Polynomial (Quadratic) Model**")
             img_path = load_image("reports/figures/regression_model2_polynomial.png")
             if img_path:
-                st.image(img_path, use_container_width=True)
+                st.image(img_path, use_column_width=True)
             st.markdown("""
             - R² = 0.51 (better fit)
             - RMSE = 0.12°C
@@ -399,7 +399,7 @@ elif page == "📈 Phase 3: Linear Regression":
         st.markdown('<div class="section-header">Bivariate Analysis</div>', unsafe_allow_html=True)
         img_path = load_image("reports/figures/regression_bivariate_analysis.png")
         if img_path:
-            st.image(img_path, use_container_width=True)
+            st.image(img_path, use_column_width=True)
 
         st.markdown("**Key Findings:**")
         st.markdown("""
@@ -413,7 +413,7 @@ elif page == "📈 Phase 3: Linear Regression":
         st.markdown('<div class="section-header">Future Temperature Projections</div>', unsafe_allow_html=True)
         img_path = load_image("reports/figures/regression_future_projections.png")
         if img_path:
-            st.image(img_path, use_container_width=True)
+            st.image(img_path, use_column_width=True)
 
         st.markdown("""
         <div class="warning-box">
@@ -427,7 +427,7 @@ elif page == "📈 Phase 3: Linear Regression":
         df_proj = load_temperature_projections()
         if df_proj is not None:
             st.markdown("**Temperature Projections Table**")
-            st.dataframe(df_proj, use_container_width=True)
+            st.dataframe(df_proj)
 
     with tab4:
         st.markdown('<div class="section-header">Executive Summary</div>', unsafe_allow_html=True)
