@@ -1,87 +1,91 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.express as px
-import plotly.graph_objects as go
 from pathlib import Path
-import json
 
 # Page configuration
 st.set_page_config(
-    page_title="Climate Reality: Understanding Our Planet's Crisis",
-    page_icon="🌍",
+    page_title="Global Temperature Change Analysis (1961-2022)",
+    page_icon="🌡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Custom CSS
 st.markdown("""
 <style>
     .main-header {
-        font-size: 3rem;
-        color: #1f77b4;
+        font-size: 2.5rem;
+        color: #e74c3c;
         text-align: center;
         margin-bottom: 2rem;
     }
     .section-header {
-        font-size: 2rem;
-        color: #2ca02c;
+        font-size: 1.8rem;
+        color: #2c3e50;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
-    }
     .info-box {
-        background-color: #e7f3ff;
-        padding: 1rem;
+        background-color: #e8f4f8;
+        padding: 1.2rem;
         border-radius: 0.5rem;
-        border-left: 4px solid #0066cc;
+        border-left: 4px solid #3498db;
     }
     .warning-box {
         background-color: #fff3cd;
-        padding: 1rem;
+        padding: 1.2rem;
         border-radius: 0.5rem;
         border-left: 4px solid #ffc107;
+    }
+    .success-box {
+        background-color: #d4edda;
+        padding: 1.2rem;
+        border-radius: 0.5rem;
+        border-left: 4px solid #28a745;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Sidebar navigation
-st.sidebar.title("🌍 Navigation")
+st.sidebar.title("🌡️ Navigation")
 st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
-    "Explore the Story:",
+    "Explore:",
     [
-        "🏠 The Climate Crisis Today",
-        "📊 Understanding the Data",
-        "🔍 Climate Patterns & Trends",
-        "📈 Our Future: What Lies Ahead",
-        "🎯 Identifying Critical Risk Periods",
-        "🔬 Different Paths, Shared Planet"
+        "🏠 Overview",
+        "📊 About the Dataset",
+        "📈 Temperature Trends",
+        "🌍 Geographic Patterns",
+        "🔮 Future Projections",
+        "🔍 Country Clustering"
     ]
 )
 
 st.sidebar.markdown("---")
-st.sidebar.info("**About This Project**\n\nAnalyzing 62 years of global climate data to understand what's happening to our planet and what we can do about it.\n\n**UAX | 2025-26**")
+st.sidebar.info("""
+**Data Source:** FAO Climate Indicators
+**Coverage:** 225 countries, 1961-2022
+**Metric:** Temperature change vs 1951-1980 baseline
 
-# Helper function to load images
+**UAX | Fundamentos de la Ciencia de Datos | 2025-26**
+""")
+
+# Helper functions
 def load_image(image_path):
-    """Load and display image if it exists."""
     if Path(image_path).exists():
         return str(image_path)
     return None
 
-# Helper function to load data
 def load_temperature_projections():
-    """Load temperature projections CSV if available."""
     csv_path = Path("reports/temperature_projections_2030.csv")
+    if csv_path.exists():
+        return pd.read_csv(csv_path)
+    return None
+
+def load_clustering_results():
+    csv_path = Path("reports/clustering_results_named.csv")
     if csv_path.exists():
         return pd.read_csv(csv_path)
     return None
@@ -89,1109 +93,1525 @@ def load_temperature_projections():
 # ===========================
 # HOME PAGE
 # ===========================
-if page == "🏠 The Climate Crisis Today":
-    st.markdown('<h1 class="main-header">🌍 Our Planet is Warming: Here\'s What the Data Shows</h1>', unsafe_allow_html=True)
+if page == "🏠 Overview":
+    st.markdown('<h1 class="main-header">🌡️ Global Temperature Change: 62 Years of Data</h1>', unsafe_allow_html=True)
 
     st.markdown("""
     <div class="warning-box">
-    <h3>⚠️ The Reality We Face</h3>
-    After analyzing 62 years of global climate data (1961-2022), one thing is clear: our planet is heating up
-    faster than at any point in recorded history. This isn't just numbers on a chart—it's reshaping coastlines,
-    threatening food security, and displacing millions of people.
+    <h3>What This Analysis Shows</h3>
+    After analyzing 62 years of global temperature data (1961-2022) covering 225 countries,
+    we've documented a clear and accelerating warming trend across the planet. This analysis
+    quantifies exactly how fast our planet is warming and where we're headed if current trends continue.
     </div>
     """, unsafe_allow_html=True)
 
-    # Key metrics in columns - Business focused
+    # Key metrics
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric("🌡️ Global Warming", "+1.2°C", "Since 1961")
-        st.caption("Enough to shift weather patterns worldwide")
+        st.metric("📅 Years Analyzed", "1961-2022", "62 years")
+        st.caption("Continuous temperature records")
     with col2:
-        st.metric("⏰ Time Remaining", "2030", "To limit warming to 1.5°C")
-        st.caption("Based on Paris Agreement targets")
+        st.metric("🌍 Countries", "225", "Global coverage")
+        st.caption("From Afghanistan to Zimbabwe")
     with col3:
-        st.metric("📈 Projected by 2030", "+1.93°C", "43% over safe limit")
-        st.caption("If current trends continue")
+        st.metric("📈 Warming Rate (2022)", "+0.047°C/year", "8x faster than 1961")
+        st.caption("Rate is accelerating")
     with col4:
-        st.metric("🌍 Countries Affected", "195", "Global crisis")
-        st.caption("No region is immune")
+        st.metric("🔮 2030 Projection", "+1.93°C", "Above baseline")
+        st.caption("Exceeds Paris Agreement target")
 
     st.markdown("---")
 
-    # The Struggle and Solutions
+    # What we discovered
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown('<div class="section-header">💔 The Struggles We Face</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">📊 Key Findings</div>', unsafe_allow_html=True)
         st.markdown("""
-        **Rising Temperatures**
-        - Planet has warmed by 1.2°C since 1961, and the pace is accelerating
-        - Each decade brings more extreme heatwaves, droughts, and wildfires
+        **1. Clear Warming Trend**
+        - Average global temperature has increased steadily since 1961
+        - The warming is not just consistent—it's accelerating
+        - Every recent decade is warmer than the previous one
 
-        **Emissions Crisis**
-        - CO₂ levels are directly driving temperature increases
-        - Current trajectory puts us on track for dangerous 2°C+ warming
+        **2. Acceleration Confirmed**
+        - Warming rate in 1961: 0.006°C per year
+        - Warming rate in 2022: 0.047°C per year
+        - That's nearly **8 times faster** in just 6 decades
 
-        **Unequal Impact**
-        - Countries that contributed least to emissions often suffer most
-        - Small island nations face existential threats from rising seas
+        **3. Geographic Inequality**
+        - Not all countries warming equally
+        - Northern/Arctic regions warming fastest
+        - Some countries experiencing 3x the global average
 
-        **Time Running Out**
-        - We're already seeing irreversible changes to ecosystems
-        - Window to limit warming to safe levels is rapidly closing
+        **4. Future Trajectory**
+        - Current trends point to 1.93°C warming by 2030
+        - This exceeds the Paris Agreement's 1.5°C target
+        - Mathematical models show high confidence in these projections
         """)
 
     with col2:
-        st.markdown('<div class="section-header">💡 Solutions Within Reach</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">🔬 What This Data Represents</div>', unsafe_allow_html=True)
         st.markdown("""
-        **Early Warning Systems**
-        - We can now predict high-risk climate years with 92% confidence
-        - Helps governments and businesses prepare for extreme events
+        **Temperature Change Explained:**
 
-        **Targeted Action Plans**
-        - Data reveals which countries need adaptation support vs emission cuts
-        - Different solutions for different situations
+        All temperatures in this analysis are measured as **anomalies** - the difference from
+        a historical baseline period (1951-1980). Here's what that means:
 
-        **Clear Benchmarks**
-        - We know exactly where we're heading if trends continue
-        - Enables evidence-based policy and investment decisions
+        - **0°C** = Same as the 1951-1980 average
+        - **+1°C** = One degree warmer than that baseline
+        - **-0.5°C** = Half a degree cooler than baseline
 
-        **Success Stories Exist**
-        - Some countries have proven low-carbon development works
-        - Their strategies can be adapted globally
+        **Why This Matters:**
+
+        Small numbers like "+1°C" might not sound dramatic, but for global climate:
+        - +1°C: Major ecosystem disruptions
+        - +1.5°C: Paris Agreement "safe" limit
+        - +2°C: Dangerous climate change threshold
+        - +3°C: Catastrophic impacts
+
+        **What Causes These Changes:**
+
+        While this dataset only measures temperature, the scientific consensus is clear:
+        - Primary driver: Greenhouse gas emissions (CO₂, methane)
+        - Contributing factors: Deforestation, industrial activity
+        - Natural variability plays a minor role
+
+        This analysis quantifies **how much** warming is happening and **how fast**
+        it's accelerating—the "what" and "when" of climate change.
         """)
 
     st.markdown("---")
 
-    # What this means for decision makers
-    st.markdown('<div class="section-header">🎯 What This Means for Action</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">🎯 Who Should Use This Analysis</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
+
     with col1:
-        st.markdown("**For Governments**")
+        st.markdown("**Policy Makers**")
         st.markdown("""
-        - Identify which years will require emergency preparedness
-        - Allocate climate adaptation budgets effectively
-        - Set realistic, data-driven emission targets
+        - Quantify warming rates for your region
+        - Compare national trends to global averages
+        - Use projections for infrastructure planning
+        - Set evidence-based climate targets
         """)
+
     with col2:
-        st.markdown("**For Businesses**")
+        st.markdown("**Researchers & Students**")
         st.markdown("""
-        - Assess climate risks to supply chains and operations
-        - Plan infrastructure investments for warming scenarios
-        - Identify opportunities in the green transition
+        - Access cleaned, analyzed temperature data
+        - Understand statistical modeling approaches
+        - See real-world data science in action
+        - Build on this foundation for further study
         """)
+
     with col3:
-        st.markdown("**For Communities**")
+        st.markdown("**Business & Infrastructure**")
         st.markdown("""
-        - Understand what climate future your region faces
-        - Prepare for increasing extreme weather events
-        - Advocate for evidence-based climate action
+        - Plan for temperature scenarios through 2030
+        - Assess climate risks to operations
+        - Design for warmer future conditions
+        - Make data-driven adaptation decisions
         """)
 
 # ===========================
-# PHASE 1: UNDERSTANDING THE DATA
+# ABOUT THE DATASET
 # ===========================
-elif page == "📊 Understanding the Data":
-    st.markdown('<h1 class="main-header">📊 What the Data Reveals About Our Climate</h1>', unsafe_allow_html=True)
+elif page == "📊 About the Dataset":
+    st.markdown('<h1 class="main-header">📊 Understanding the Data Source</h1>', unsafe_allow_html=True)
 
     st.markdown("""
     <div class="info-box">
-    <h3>The Foundation: 62 Years of Global Climate Records</h3>
-    We've gathered comprehensive climate data from 195 countries spanning 1961 to 2022. This dataset tracks
-    key indicators: temperature changes, carbon emissions, methane levels, deforestation rates, and sea level rise.
-    Together, they tell the story of our changing planet.
+    <h3>Data Transparency & Reliability</h3>
+    This analysis uses publicly available data from the Food and Agriculture Organization (FAO)
+    of the United Nations. Below is complete documentation of what this dataset contains, where
+    it comes from, and crucially—what it does NOT include.
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("---")
 
-    # What we track
-    st.markdown('<div class="section-header">🌡️ What We\'re Tracking</div>', unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("**Climate Impact Indicators**")
-        st.markdown("""
-        **Temperature Changes**
-        - How much warmer (or cooler) each year was compared to historical averages
-        - Tracks the direct impact on our climate
-
-        **Sea Level Rise**
-        - Measuring coastal threats to millions of people
-        - Critical for island nations and coastal cities
-
-        **Extreme Weather Frequency**
-        - How often we're experiencing record-breaking heat
-        - Pattern of climate instability
-        """)
-
-    with col2:
-        st.markdown("**What's Driving the Changes**")
-        st.markdown("""
-        **Carbon Dioxide (CO₂) Emissions**
-        - The primary driver of global warming
-        - From burning fossil fuels and industrial processes
-
-        **Methane Emissions**
-        - A potent greenhouse gas from agriculture and energy
-        - 25x more warming potential than CO₂
-
-        **Deforestation Rates**
-        - Loss of nature's carbon storage systems
-        - Reduces Earth's ability to regulate climate
-        """)
-
-    st.markdown("---")
-
-    # Key Insights from the Data
-    st.markdown('<div class="section-header">🔍 Key Questions the Data Answers</div>', unsafe_allow_html=True)
-
-    insights = {
-        "How has warming progressed over time?": {
-            "finding": """
-            **Year-by-year analysis reveals accelerating warming:**
-            - 1960s-1970s: Relatively stable temperatures with minor fluctuations
-            - 1980s-2000: Warming begins to accelerate significantly
-            - 2000-2022: Each decade warmer than the last, with 2015-2022 seeing unprecedented heat
-
-            **What this means:** The problem isn't just warming—it's the speed of change. Ecosystems and societies
-            struggle to adapt when change happens this fast.
-            """,
-            "chart": "reports/figures/query1_temporal_aggregation.png"
-        },
-        "Which countries are the biggest contributors?": {
-            "finding": """
-            **Top emitters since 2000:**
-            1. China - Rapid industrialization created massive emission growth
-            2. United States - High per-capita emissions despite being developed
-            3. India - Growing economy with coal dependence
-            4. Russia - Energy production and heavy industry
-            5. Japan - Manufacturing powerhouse
-
-            **What this means:** The top 10 emitters account for over 60% of global CO₂. Solutions require
-            both emission cuts from major polluters AND support for clean development elsewhere.
-            """,
-            "chart": None
-        },
-        "How do different decades compare?": {
-            "finding": """
-            **Decade-by-decade warming trend:**
-            - 1960s: Baseline period, relatively cool and stable
-            - 1970s: First signs of warming trend emerging
-            - 1980s: Clear warming signal, extreme years becoming more common
-            - 1990s: Warming accelerates, variability increases
-            - 2000s: Hot years become the norm rather than exception
-            - 2010s: Every year warmer than 20th century average
-            - 2020s: On track to be hottest decade ever recorded
-
-            **What this means:** Each generation is inheriting a more unstable climate than the last.
-            """,
-            "chart": None
-        },
-        "When do we see the most dangerous years?": {
-            "finding": """
-            **Identifying extreme climate years:**
-            - Before 1990: Rare extreme heat years, usually isolated events
-            - 1990-2010: Extreme years becoming more frequent
-            - 2010-2022: Majority of years qualify as "extreme" by historical standards
-
-            **Red flags we're seeing:**
-            - Years with multiple record-breaking temperatures globally
-            - Simultaneous extremes in different regions
-            - Shorter recovery periods between extreme events
-
-            **What this means:** What used to be a once-in-a-generation heatwave is becoming routine.
-            Communities and infrastructure designed for historical climate norms are increasingly inadequate.
-            """,
-            "chart": None
-        }
-    }
-
-    insight_choice = st.selectbox("Explore Key Insights:", list(insights.keys()))
-
-    st.markdown(insights[insight_choice]["finding"])
-
-    # Display visualization if available
-    if insights[insight_choice]["chart"]:
-        img_path = load_image(insights[insight_choice]["chart"])
-        if img_path:
-            st.image(img_path, caption=insight_choice, use_column_width=True)
-
-# ===========================
-# PHASE 2: CLIMATE PATTERNS & TRENDS
-# ===========================
-elif page == "🔍 Climate Patterns & Trends":
-    st.markdown('<h1 class="main-header">🔍 Uncovering Climate Patterns: What the Numbers Show</h1>', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="info-box">
-    <h3>Reading the Climate Story in Data</h3>
-    Looking beyond individual numbers to understand the bigger patterns: How are temperatures changing?
-    Which regions are hit hardest? What's driving these changes? These patterns help us understand where
-    we've been and where we're heading.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    tab1, tab2, tab3, tab4 = st.tabs(["🌡️ The Warming Pattern", "📈 How Fast Are We Warming?", "🌍 Who's Most Affected?", "🔗 What's Driving It?"])
+    tab1, tab2, tab3 = st.tabs(["📚 Source & Coverage", "🌡️ What's Included", "⚠️ Limitations"])
 
     with tab1:
-        st.markdown('<div class="section-header">The Shape of Global Warming</div>', unsafe_allow_html=True)
-        img_path = load_image("reports/figures/eda_univariate_temperature.png")
-        if img_path:
-            st.image(img_path, use_column_width=True)
-        else:
-            st.info("Visualization will be available after running the analysis.")
+        st.markdown('<div class="section-header">Data Source & Collection</div>', unsafe_allow_html=True)
 
         st.markdown("""
-        **What this pattern tells us:**
+        **Official Source:**
+        - **Organization**: Food and Agriculture Organization of the United Nations (FAO)
+        - **Dataset**: FAOSTAT Climate Change - Climate Indicators
+        - **Indicator**: Surface Temperature Change
+        - **License**: CC BY-NC-SA 3.0 IGO
+        - **Last Updated**: 2023
+        - **Source URL**: [FAO Climate Data](https://www.fao.org/faostat/en/#data/ET)
 
-        The distribution of global temperatures over 62 years reveals a clear shift toward warmer conditions:
-        - Early decades (1960s-1970s) cluster around cooler temperatures
-        - Recent decades show a distinct shift toward the warmer end
-        - The "new normal" is significantly warmer than historical averages
+        **Temporal Coverage:**
+        - **Start Year**: 1961
+        - **End Year**: 2022
+        - **Duration**: 62 consecutive years
+        - **Frequency**: Annual measurements
+        - **Total Observations**: 12,460 (225 countries × 62 years, with some gaps)
 
-        **Real-world impact:**
-        - Agricultural zones are shifting as temperature ranges change
-        - Infrastructure designed for historical temperature ranges is now inadequate
-        - What used to be exceptionally hot years are becoming typical
+        **Geographic Coverage:**
+        - **Countries/Territories**: 225
+        - **Regions**: All continents
+        - **Coverage Type**: Comprehensive global dataset
+        - **Smallest Territory**: Monaco (2 km²)
+        - **Largest Territory**: Russia (17 million km²)
         """)
 
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Average Temperature", "14.2°C")
-            st.caption("Global average across all years")
-        with col2:
-            st.metric("Warming Range", "1.8°C variation")
-            st.caption("But recent years cluster at the high end")
-        with col3:
-            st.metric("Total Shift", "8.5°C spread")
-            st.caption("From coolest to warmest years")
+        st.markdown("---")
 
-    with tab2:
-        st.markdown('<div class="section-header">The Acceleration of Warming</div>', unsafe_allow_html=True)
-        img_path = load_image("reports/figures/eda_temporal_trends.png")
-        if img_path:
-            st.image(img_path, use_column_width=True)
-        else:
-            st.info("Visualization will be available after running the analysis.")
-
-        st.markdown("""
-        **The story the trend line tells:**
-
-        This isn't just gradual warming—it's acceleration:
-        - **1961-1980**: Slow, almost imperceptible temperature increases
-        - **1980-2000**: Warming becomes clearly visible and measurable
-        - **2000-2022**: Rapid temperature rise, with each year often breaking previous records
-
-        **Why acceleration matters:**
-        The speed of change is as critical as the amount. Faster warming means:
-        - Less time for ecosystems to adapt
-        - More severe weather extremes
-        - Insufficient time to upgrade infrastructure
-        - Increased risk of cascading climate impacts
-
-        **What businesses and governments need to know:**
-        Planning based on historical climate data is increasingly unreliable. The next decade will likely
-        be warmer than any in recorded history, requiring adaptive strategies and resilient infrastructure.
-        """)
-
-    with tab3:
-        st.markdown('<div class="section-header">Climate Injustice: Unequal Burdens</div>', unsafe_allow_html=True)
+        st.markdown("**How Temperature Data is Collected:**")
 
         col1, col2 = st.columns(2)
 
         with col1:
-            img_path = load_image("reports/figures/eda_geographic_heterogeneity.png")
-            if img_path:
-                st.image(img_path, use_column_width=True)
-
-        with col2:
-            img_path = load_image("reports/figures/eda_top_countries.png")
-            if img_path:
-                st.image(img_path, use_column_width=True)
-
-        st.markdown("**The Unfair Reality:**")
-        st.markdown("""
-        Climate change doesn't affect everyone equally, revealing stark global inequalities:
-
-        **Arctic and Northern Regions:**
-        - Experiencing warming at 2-3 times the global average
-        - Permafrost melt threatens infrastructure and releases stored carbon
-        - Indigenous communities losing traditional ways of life
-
-        **Small Island Nations:**
-        - Produce minimal emissions but face existential threats
-        - Rising seas threaten entire countries (Maldives, Tuvalu, Kiribati)
-        - No higher ground to retreat to
-
-        **Developing Countries:**
-        - Often located in vulnerable tropical and subtropical zones
-        - Less resources for adaptation and disaster response
-        - Agriculture-dependent economies hit hardest by changing weather
-
-        **The Emission Gap:**
-        - Top 10% of emitters are primarily developed nations
-        - Bottom 50% contribute minimal emissions but face worst impacts
-        - Historical emissions from industrialization created current crisis
-        """)
-
-    with tab4:
-        st.markdown('<div class="section-header">The Root Causes: What\'s Driving This?</div>', unsafe_allow_html=True)
-        img_path = load_image("reports/figures/eda_decade_analysis.png")
-        if img_path:
-            st.image(img_path, use_container_width=True)
-
-        st.markdown("""
-        **The Clear Connection Between Emissions and Warming:**
-
-        The data reveals an undeniable link between human activities and rising temperatures:
-
-        **Carbon Dioxide (CO₂): The Primary Culprit**
-        - For every increase in CO₂ emissions, temperatures rise in lockstep
-        - The relationship is so strong it's virtually predictable
-        - Source: Burning fossil fuels for energy, transportation, and manufacturing
-
-        **Methane: The Overlooked Problem**
-        - 25 times more potent than CO₂ at trapping heat
-        - Rising alongside industrialization and agricultural expansion
-        - Source: Livestock farming, rice cultivation, and natural gas leaks
-
-        **Deforestation: Removing Our Natural Defense**
-        - Trees absorb CO₂, but we're cutting them down at alarming rates
-        - Lost forests means more CO₂ stays in the atmosphere
-        - Regional impacts show clear temperature increases where forests disappear
-
-        **The Bottom Line:**
-        This isn't natural climate variation—it's directly tied to how we produce energy, grow food,
-        and develop land. But that also means we know exactly what needs to change.
-        """)
-
-# ===========================
-# PHASE 3: OUR FUTURE - WHAT LIES AHEAD
-# ===========================
-elif page == "📈 Our Future: What Lies Ahead":
-    st.markdown('<h1 class="main-header">📈 Where Are We Heading? Projecting Our Climate Future</h1>', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="warning-box">
-    <h3>⚠️ If Current Trends Continue...</h3>
-    By analyzing 62 years of data, we can project where we're headed. The patterns are clear and consistent
-    enough to predict the future with confidence—and what we see requires urgent action.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # Key business-focused metrics
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("2030 Temperature", "1.93°C above baseline", "⚠️ Critical level")
-        st.caption("Exceeds Paris Agreement target")
-    with col2:
-        st.metric("Paris Agreement Gap", "+0.43°C", "29% over limit")
-        st.caption("We're missing the 1.5°C target")
-    with col3:
-        st.metric("Current Warming Rate", "0.047°C per year", "Accelerating")
-        st.caption("8x faster than 1961 rate")
-    with col4:
-        st.metric("Prediction Confidence", "High", "Based on strong patterns")
-        st.caption("Historical data shows consistent trend")
-
-    st.markdown("---")
-
-    tab1, tab2, tab3, tab4 = st.tabs(["🔍 Understanding the Trend", "⚡ The Acceleration Problem", "🔮 What 2030 Looks Like", "💼 Business Implications"])
-
-    with tab1:
-        st.markdown('<div class="section-header">Two Ways to Look at Warming</div>', unsafe_allow_html=True)
-
-        st.markdown("""
-        We tested two scenarios for how warming might continue:
-        """)
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.markdown("**Scenario 1: Steady, Constant Warming**")
-            img_path = load_image("reports/figures/regression_model1_simple.png")
-            if img_path:
-                st.image(img_path, use_column_width=True)
             st.markdown("""
-            **Assumption:** Warming continues at the same pace as historical average
-
-            **The Problem:** This scenario significantly underestimates future warming because
-            it ignores the acceleration we're seeing. Historical data shows warming isn't
-            constant—it's speeding up.
-
-            **Result:** Poor match with actual observed patterns
+            **Measurement Methods:**
+            - Ground-based weather stations
+            - Standardized instruments and protocols
+            - Daily temperature readings averaged annually
+            - Multiple stations per country for accuracy
+            - Quality control and error detection
             """)
 
         with col2:
-            st.markdown("**Scenario 2: Accelerating Warming (What We're Seeing)**")
-            img_path = load_image("reports/figures/regression_model2_polynomial.png")
-            if img_path:
-                st.image(img_path, use_column_width=True)
             st.markdown("""
-            **Assumption:** Warming is accelerating, not constant
-
-            **Why It Matters:** This matches what we actually observe—each decade warms faster
-            than the last. This is due to feedback loops (like ice melt reducing Earth's
-            reflectivity) and cumulative emissions.
-
-            **Result:** Closely matches observed data and better predicts future warming
+            **Data Processing:**
+            - Compiled by meteorological agencies
+            - Cross-validated between stations
+            - Aggregated to national level
+            - Anomalies calculated vs 1951-1980 baseline
+            - Peer-reviewed methodology
             """)
+
+        st.markdown("---")
+
+        st.markdown("**Baseline Period (1951-1980):**")
+        st.markdown("""
+        All temperature changes are expressed relative to the 1951-1980 period average. This 30-year
+        period was chosen because:
+        - Long enough to smooth out year-to-year variability
+        - Represents "pre-acceleration" climate conditions
+        - Widely used standard in climate science
+        - Allows comparison across different datasets
+        """)
 
     with tab2:
-        st.markdown('<div class="section-header">Why Acceleration Is the Real Danger</div>', unsafe_allow_html=True)
-        img_path = load_image("reports/figures/regression_bivariate_analysis.png")
-        if img_path:
-            st.image(img_path, use_column_width=True)
+        st.markdown('<div class="section-header">What This Dataset Contains</div>', unsafe_allow_html=True)
 
         st.markdown("""
-        **The acceleration of warming is what makes this crisis so urgent:**
-
-        **1961: The Starting Point**
-        - Warming rate: 0.006°C per year
-        - Barely noticeable changes
-        - Climate relatively stable
-
-        **2022: Today's Reality**
-        - Warming rate: 0.047°C per year
-        - **Nearly 8x faster than 1961**
-        - Rapid, visible changes to weather patterns
-
-        **What This Means:**
-        - We're not dealing with steady, predictable change
-        - The problem is compounding, getting worse faster
-        - Infrastructure, agriculture, and ecosystems built for historical climate can't keep up
-        - Each year of delay makes the problem harder to solve
-
-        **Real-World Impacts of Acceleration:**
-        - Coastal cities have less time to build defenses
-        - Farmers can't adapt crop varieties fast enough
-        - Insurance models based on historical risk become obsolete
-        - Species can't migrate or evolve quickly enough to survive
-        """)
-
-    with tab3:
-        st.markdown('<div class="section-header">2030: A Critical Crossroads</div>', unsafe_allow_html=True)
-        img_path = load_image("reports/figures/regression_future_projections.png")
-        if img_path:
-            st.image(img_path, use_column_width=True)
-
-        st.markdown("""
-        <div class="warning-box">
-        <h4>⚠️ We're On Track to Miss Our Climate Goals</h4>
-        If current trends continue, by 2030 we'll reach <strong>1.93°C</strong> of warming—
-        <strong>0.43°C above the Paris Agreement target</strong> of 1.5°C.
-        That may sound small, but every fraction of a degree matters enormously.
+        <div class="success-box">
+        <h4>✅ Variables Included in This Dataset</h4>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("""
-        **What 1.93°C means for the world:**
+        st.markdown("**Core Data Fields:**")
 
-        **Food Security Threats:**
-        - Crop yields decline in tropical regions
-        - More frequent droughts affect grain production
-        - Fishing grounds shift, disrupting coastal economies
-
-        **Extreme Weather Becomes the Norm:**
-        - Hurricanes and typhoons intensify
-        - Deadly heatwaves occur more frequently
-        - Flooding events increase in severity and frequency
-
-        **Economic Disruption:**
-        - Supply chain interruptions from extreme weather
-        - Infrastructure damage costs escalate
-        - Insurance premiums rise, some areas become uninsurable
-
-        **Irreversible Changes:**
-        - Coral reefs face mass die-offs (tourism, fishing impacted)
-        - Arctic sea ice disappears in summer months
-        - Greenland ice sheet loss accelerates (sea level rise)
-
-        **Why 1.5°C Was the Target:**
-        Scientists determined that 1.5°C represents a threshold where we can still avoid the worst
-        impacts. Beyond that, feedback loops kick in that make the problem much harder to control.
-        """)
-
-        # Load and display temperature projections table
-        df_proj = load_temperature_projections()
-        if df_proj is not None:
-            st.markdown("**Year-by-Year Projections Through 2030:**")
-            st.dataframe(df_proj, use_container_width=True)
-            st.caption("Each year shows estimated warming if current trends continue unchecked")
-
-    with tab4:
-        st.markdown('<div class="section-header">What Decision-Makers Need to Know</div>', unsafe_allow_html=True)
+        # Create sample dataframe
+        sample_data = {
+            'Country': ['Russian Federation', 'Estonia, Rep. of', 'United States of America', 'Brazil', 'Japan'],
+            'ISO3': ['RUS', 'EST', 'USA', 'BRA', 'JPN'],
+            'Year': [2020, 2020, 2020, 2020, 2020],
+            'Temperature_Change_°C': [3.691, 3.625, 1.421, 1.156, 1.293]
+        }
+        st.dataframe(pd.DataFrame(sample_data), use_container_width=True, hide_index=True)
+        st.caption("Sample: Top warming countries in 2020 showing actual data structure")
 
         st.markdown("""
-        **The Bottom Line:**
-        Based on 62 years of consistent data, we can say with high confidence that current trends will
-        lead to approximately 1.93°C of warming by 2030—well above safe limits.
+        **Column Descriptions:**
 
-        **What Governments Should Do:**
-        1. **Plan infrastructure for a 2°C warmer world**
-           - Upgrade flood defenses and drainage systems
-           - Redesign cooling systems for hospitals and schools
-           - Strengthen power grids for extreme weather
+        1. **Country**: Official country/territory name
+           - 225 unique countries and territories
+           - Includes small island nations and territories
 
-        2. **Accelerate the transition away from fossil fuels**
-           - Current emission rates guarantee dangerous warming
-           - Earlier transition means less severe impacts
-           - Cost of prevention far lower than cost of adaptation
+        2. **ISO3**: Three-letter country code
+           - International standard (ISO 3166-1 alpha-3)
+           - Enables easy data joining and mapping
 
-        3. **Support vulnerable regions now**
-           - Don't wait for 2030 to prepare
-           - Invest in early warning systems
-           - Fund climate adaptation in high-risk areas
+        3. **Year**: Calendar year of measurement
+           - Range: 1961 to 2022
+           - Annual frequency (one value per country per year)
 
-        **What Businesses Should Do:**
-        1. **Stress-test operations for climate scenarios**
-           - Assume 2°C warming minimum for long-term planning
-           - Identify supply chain vulnerabilities
-           - Assess physical asset exposure to extreme weather
-
-        2. **Identify opportunities in the transition**
-           - Green technology demand will explode
-           - Climate adaptation is a massive market
-           - Early movers gain competitive advantage
-
-        3. **Engage in carbon accounting now**
-           - Regulation is coming globally
-           - Investors increasingly demand climate disclosure
-           - Carbon costs will affect bottom lines
-
-        **What This Analysis Can't Tell Us:**
-        - Specific regional impacts (we're looking at global averages)
-        - Effects of potential policy changes (we're projecting current trends)
-        - Timing of tipping points (feedback loops could accelerate warming further)
-
-        **Therefore:** Use this as a baseline "business as usual" scenario, but also prepare for
-        scenarios where warming accelerates even faster. Hope for policy success, but don't bet
-        your business or community on it.
+        4. **Temperature Change (°C)**: THE key variable
+           - **Definition**: Difference from 1951-1980 baseline average
+           - **Units**: Degrees Celsius
+           - **Range in dataset**: -2.06°C to +3.69°C
+           - **Interpretation**:
+             - Positive values = warmer than baseline
+             - Negative values = cooler than baseline
+             - Larger absolute values = greater change
         """)
 
-# ===========================
-# PHASE 4: IDENTIFYING CRITICAL RISK PERIODS
-# ===========================
-elif page == "🎯 Identifying Critical Risk Periods":
-    st.markdown('<h1 class="main-header">🎯 Spotting the Most Dangerous Climate Years Before They Hit</h1>', unsafe_allow_html=True)
+        st.markdown("---")
 
-    st.markdown("""
-    <div class="info-box">
-    <h3>Early Warning System for Extreme Climate Years</h3>
-    Some years are significantly more dangerous than others—marked by extreme temperatures, severe weather,
-    and major climate impacts. By analyzing patterns from the past 62 years, we can now identify which years
-    are most likely to be "high-risk" based on emission levels and other indicators.
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown("**Statistical Properties of Temperature Data:**")
 
-    st.markdown("---")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Mean", "0.538°C", "Global average change")
+        col2.metric("Median", "0.470°C", "Middle value")
+        col3.metric("Std Dev", "0.655°C", "Typical variation")
+        col4.metric("Range", "5.75°C", "Min to max spread")
 
-    # Business-focused metrics
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Prediction Success", "92%", "Highly reliable")
-        st.caption("We correctly identify 92 out of 100 extreme years")
-    with col2:
-        st.metric("False Alarm Rate", "11%", "Low")
-        st.caption("Rarely cry wolf on normal years")
-    with col3:
-        st.metric("Detection Rate", "94%", "Catches almost all")
-        st.caption("Miss only 6% of actual extreme years")
-    with col4:
-        st.metric("Advance Warning", "Early", "Actionable")
-        st.caption("Indicators visible before year begins")
-
-    st.markdown("---")
-
-    tab1, tab2, tab3 = st.tabs(["🚨 How Reliable Are the Warnings?", "🔍 What to Watch For", "💼 Practical Applications"])
-
-    with tab1:
-        st.markdown('<div class="section-header">The Track Record: Can We Trust These Predictions?</div>', unsafe_allow_html=True)
-
-        st.markdown("""
-        **Testing the system on historical data:**
-
-        We tested our early warning system against 62 years of actual climate data to see if it could
-        correctly identify which years turned out to be extreme. Here's how it performed:
-
-        **Success Rate: 92%**
-        - Out of 100 years, we correctly classify 92 as either high-risk or normal
-        - This is reliable enough to guide planning and resource allocation
-
-        **Low False Alarm Rate: 11%**
-        - When we warn that a year will be extreme, we're wrong only 11% of the time
-        - Means decision-makers can act on our warnings with confidence
-        - Avoids "cry wolf" problem that reduces trust in alerts
-
-        **Catches Nearly Everything: 94% Detection**
-        - We catch 94 out of every 100 truly extreme years
-        - Only miss about 6% of dangerous years
-        - Better to over-prepare occasionally than miss a crisis
-
-        **What This Means for Planning:**
-        This level of accuracy makes the system valuable for:
-        - Emergency preparedness budgeting
-        - Agricultural planning (when to expect challenging conditions)
-        - Insurance risk assessment
-        - Infrastructure maintenance scheduling
-        - Public health resource allocation
-        """)
-
-        st.markdown("**How Well Do We Classify Years?**")
-        st.markdown("""
-        Out of approximately 310 country-years analyzed:
-        - ✅ **150 Normal years** correctly identified as normal
-        - ✅ **140 Extreme years** correctly identified as high-risk
-        - ⚠️ **12 False alarms** (predicted extreme, actually normal)
-        - ❌ **8 Missed warnings** (didn't catch these extreme years)
-        """)
-
-    with tab2:
-        st.markdown('<div class="section-header">The Warning Signs: What to Watch For</div>', unsafe_allow_html=True)
-
-        st.markdown("""
-        **Which factors best predict an extreme climate year?**
-
-        By analyzing decades of data, we've identified the key warning signs that indicate a year is
-        likely to be particularly dangerous:
-
-        **1. CO₂ Emission Levels (Strongest Indicator)**
-        - This is the #1 warning sign
-        - When CO₂ levels spike, extreme years almost always follow
-        - The relationship is so strong it's almost guaranteed
-        - **Threshold to watch:** CO₂ concentrations above 400 ppm dramatically increase risk
-
-        **2. The Year Itself (Time Trend)**
-        - Simply put: recent years are more dangerous than past years
-        - Each passing year increases likelihood of extreme conditions
-        - Reflects the cumulative buildup of greenhouse gases in atmosphere
-        - **What it means:** 2020s years are inherently higher risk than 1980s years
-
-        **3. Methane Levels**
-        - Second most important greenhouse gas
-        - Often overlooked but significant
-        - Rising methane is a reliable indicator of upcoming climate stress
-        - **Sources:** Agriculture, natural gas leaks, wetlands
-
-        **4. Deforestation Rates**
-        - Less predictive globally but critical regionally
-        - Rapid forest loss predicts localized extreme years
-        - Removes natural carbon storage and cooling
-        - **Impact zones:** Amazon, Southeast Asia, Central Africa
-
-        **How to Use This Information:**
-        - Monitor global CO₂ levels throughout the year
-        - If levels are climbing rapidly, prepare for extreme conditions
-        - Recent years + high emissions = very high probability of extreme year
-        - Plan agricultural seasons, disaster budgets, and emergency resources accordingly
-        """)
+        st.caption("Statistics across all 12,460 country-year observations")
 
     with tab3:
-        st.markdown('<div class="section-header">Putting It to Use: Real-World Applications</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Critical Limitations</div>', unsafe_allow_html=True)
 
         st.markdown("""
-        **How this early warning system helps different stakeholders:**
+        <div class="warning-box">
+        <h4>⚠️ What This Dataset Does NOT Include</h4>
+        Being transparent about limitations is essential for proper interpretation.
+        </div>
+        """, unsafe_allow_html=True)
 
-        **For Emergency Management:**
-        - **Pre-position disaster response resources** in years flagged as high-risk
-        - **Increase emergency budgets** when multiple warning indicators flash red
-        - **Coordinate across regions** when warnings indicate widespread extreme conditions
-        - **Example:** If 2025 shows high-risk indicators, stockpile emergency supplies in late 2024
-
-        **For Agriculture & Food Security:**
-        - **Adjust planting strategies** based on forecasted extreme year probability
-        - **Secure water rights and storage** before drought-prone years
-        - **Diversify crop selection** to hedge against predicted climate stress
-        - **Example:** Switch to drought-resistant varieties when high-risk year predicted
-
-        **For Insurance & Financial Services:**
-        - **Adjust premium pricing** for climate-sensitive policies in high-risk years
-        - **Manage reserve requirements** based on expected claim volumes
-        - **Guide investment decisions** away from climate-vulnerable assets
-        - **Example:** Increase catastrophe reserves 6-12 months before flagged years
-
-        **For Infrastructure & Utilities:**
-        - **Schedule critical maintenance** outside of predicted extreme years
-        - **Boost grid resilience** before high-risk summer or winter seasons
-        - **Pre-stage repair crews and equipment** in vulnerable regions
-        - **Example:** Strengthen power grid and tree trimming before extreme weather year
-
-        **For Public Health:**
-        - **Prepare for heat-related illness surges** in flagged years
-        - **Stock medications** for climate-sensitive conditions
-        - **Plan cooling center operations** in advance
-        - **Example:** Increase heat emergency protocol training before high-risk summer
-
-        **The Trend We Can't Ignore:**
-        - **1990:** About 15% of years were high-risk
-        - **2000:** Risen to about 35% of years
-        - **2010:** Jumped to about 60% of years
-        - **2020:** Now 85% of years qualify as high-risk
-
-        **What this tells us:**
-        The "new normal" is what we used to call "extreme." Our baseline for what constitutes a
-        dangerous climate year is shifting. This system helps distinguish between the new normal
-        and the truly catastrophic.
-        """)
-
-# ===========================
-# PHASE 5: DIFFERENT PATHS, SHARED PLANET
-# ===========================
-elif page == "🔬 Different Paths, Shared Planet":
-    st.markdown('<h1 class="main-header">🔬 Four Different Climate Stories: Not All Countries Face the Same Challenge</h1>', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="info-box">
-    <h3>One Planet, Many Realities</h3>
-    When we analyzed 195 countries' climate and emission data, a striking pattern emerged: countries fall
-    into four distinct groups, each facing different challenges and requiring different solutions. Understanding
-    these groups helps target climate action where it's needed most.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # Business-focused metrics
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Country Groups", "4 distinct types", "Clear patterns")
-        st.caption("Each needs different strategies")
-    with col2:
-        st.metric("Major Emitters", "23 countries", "60% of emissions")
-        st.caption("Where most cuts must happen")
-    with col3:
-        st.metric("Vulnerable Nations", "67 countries", "Lowest emissions")
-        st.caption("Need urgent adaptation support")
-    with col4:
-        st.metric("Global Coverage", "195 countries", "Complete picture")
-        st.caption("Every nation categorized")
-
-    st.markdown("---")
-
-    tab1, tab2, tab3 = st.tabs(["🌍 The Four Country Groups", "📊 Understanding the Divide", "💡 Solutions for Each Group"])
-
-    with tab1:
-        st.markdown('<div class="section-header">Four Types of Climate Stories</div>', unsafe_allow_html=True)
+        st.markdown("**Variables NOT in This Dataset:**")
 
         col1, col2 = st.columns(2)
 
         with col1:
             st.markdown("""
-            **Group 1: The Major Emitters** (23 countries)
+            **❌ Emissions Data**
+            - No CO₂ (carbon dioxide) measurements
+            - No CH₄ (methane) data
+            - No greenhouse gas inventories
+            - No per-capita emissions
 
-            **Who they are:**
-            - Industrialized nations with high per-capita emissions
-            - Major economies: USA, China, Russia, Saudi Arabia, Japan, Germany
-            - Account for over 60% of global CO₂ emissions
-
-            **Their challenge:**
-            - Built their prosperity on fossil fuels
-            - Now must transition entire economies
-            - Face resistance from established industries
-
-            **Their responsibility:**
-            - Created most of the historical emissions
-            - Have the resources to lead the transition
-            - Their choices determine global trajectory
-
-            **Real-world impact:**
-            - Every policy they adopt ripples globally
-            - Can afford green tech investments others can't
-            - Setting examples (good or bad) for developing nations
-            """)
-
-            st.markdown("""
-            **Group 2: The Vulnerable Nations** (67 countries)
-
-            **Who they are:**
-            - Small island states: Maldives, Tuvalu, Fiji, Kiribati
-            - Coastal developing nations: Bangladesh, Vietnam
-            - Low-lying regions facing existential threats
-
-            **Their struggle:**
-            - Contribute <5% of global emissions
-            - Face the worst climate impacts
-            - Limited resources for adaptation
-
-            **What they're experiencing:**
-            - Rising seas threatening entire nations
-            - Saltwater contaminating freshwater supplies
-            - More intense cyclones devastating communities
-            - Climate migration becoming inevitable
-
-            **The injustice:**
-            - Didn't cause the problem but paying the highest price
-            - Need international support to survive
-            - Some nations may cease to exist
+            **❌ Other Climate Indicators**
+            - No precipitation/rainfall data
+            - No sea level rise measurements
+            - No ocean temperature
+            - No ice cover/glacier data
             """)
 
         with col2:
             st.markdown("""
-            **Group 3: The Green Leaders** (41 countries)
+            **❌ Land Use Changes**
+            - No deforestation rates
+            - No urbanization data
+            - No agricultural expansion
 
-            **Who they are:**
-            - Norway, Iceland, Costa Rica, Uruguay, Denmark, New Zealand
-            - Early adopters of renewable energy
-            - Strong climate policies and low per-capita emissions
-
-            **What they've achieved:**
-            - Proven that low-carbon development works
-            - High quality of life with low emissions
-            - Renewable energy dominates their grids
-
-            **Their value:**
-            - Living proof that alternatives exist
-            - Exporting green technology and expertise
-            - Setting ambitious targets that others follow
-
-            **Their limitations:**
-            - Small populations = limited global impact
-            - Often have natural advantages (hydro, geothermal)
-            - Can't solve the problem alone
+            **❌ Socioeconomic Data**
+            - No population figures
+            - No GDP or economic data
+            - No energy consumption
+            - No policy information
             """)
 
-            st.markdown("""
-            **Group 4: The Crossroads Countries** (64 countries)
+        st.markdown("---")
 
-            **Who they are:**
-            - Rapidly developing: India, Brazil, Indonesia, Mexico, Philippines
-            - Caught between development and climate needs
-            - Moderate but growing emissions
+        st.markdown("**Geographic Aggregation Issues:**")
 
-            **Their dilemma:**
-            - Need economic growth to lift populations from poverty
-            - But can't follow the high-emission path rich nations took
-            - Under pressure to "leapfrog" to clean technology
+        st.markdown("""
+        **The Problem:** Temperature data is aggregated at the **national level**, which hides
+        internal variation within large or geographically diverse countries.
 
-            **Their challenges:**
-            - Limited resources for expensive green tech
-            - Cheap fossil fuels remain tempting
-            - Balancing immediate needs vs. long-term survival
+        **Examples of Hidden Variation:**
 
-            **Why they matter:**
-            - Home to majority of world's population
-            - Their energy choices determine global future
-            - If they repeat high-carbon development, climate goals impossible
+        **Chile** (4,300 km long, north-south)
+        - Atacama Desert (north): Arid, extreme heat
+        - Central Valley: Mediterranean climate
+        - Patagonia (south): Cold, maritime conditions
+        - **National average**: Masks 10°C+ regional differences
 
-            **The opportunity:**
-            - Can skip outdated fossil fuel infrastructure
-            - Falling renewable costs make clean development viable
-            - Youth populations eager for sustainable solutions
-            """)
+        **Russia** (17 million km², 41° latitude span)
+        - Arctic regions: Extreme warming (>3°C in some years)
+        - Southern regions: More moderate changes
+        - **National average**: Dominated by vast Arctic territories
+
+        **USA** (9.8 million km², diverse climates)
+        - Alaska: Arctic/subarctic warming
+        - Southwest: Desert heat intensification
+        - Northeast: Continental climate shifts
+        - **National average**: Smooths out dramatic regional differences
+
+        **Implication:** A country's national average may not reflect local conditions.
+        Small, geographically homogeneous countries (e.g., Singapore, Luxembourg) have more
+        representative national averages.
+        """)
+
+        st.markdown("---")
+
+        st.markdown("**Analytical Limitations:**")
+
+        st.markdown("""
+        1. **Temporal Coverage (62 years)**
+           - Relatively short for climate timescales
+           - Can't capture century-scale patterns
+           - Limited ability to detect long cycles
+
+        2. **National Aggregation**
+           - Loses regional climate detail
+           - Can't analyze subnational trends
+           - Biased toward geographic size
+
+        3. **Temperature Only**
+           - Can't directly analyze causes (emissions, land use)
+           - Can't assess other impacts (precipitation, extremes)
+           - Correlation with causes requires external data
+
+        4. **No Extremes Data**
+           - Doesn't capture frequency of heat waves
+           - Doesn't show intensity of cold snaps
+           - Annual averages smooth out extreme events
+
+        5. **Projection Uncertainty**
+           - Statistical models assume trends continue
+           - Can't predict policy changes or interventions
+           - Confidence intervals widen rapidly beyond 2030
+        """)
+
+        st.markdown("---")
+
+        st.markdown("""
+        <div class="info-box">
+        <h4>ℹ️ How We Handle These Limitations</h4>
+
+        **Transparency:**
+        - We clearly state what the data shows and doesn't show
+        - Projections are labeled as "statistical extrapolations"
+        - Uncertainty ranges (confidence intervals) are always provided
+
+        **Appropriate Use:**
+        - Temperature trends: ✅ Strong conclusions possible
+        - Acceleration analysis: ✅ Well-supported by data
+        - Future projections: ⚠️ Useful baselines, but high uncertainty
+        - Cause attribution: ❌ Requires external emission data
+        - Policy effectiveness: ❌ Beyond scope of this dataset
+
+        **Complementary Data Needed:**
+        - For full climate picture: IPCC comprehensive assessments
+        - For emissions analysis: EDGAR, CDIAC databases
+        - For regional detail: National meteorological services
+        - For policy impact: Controlled scenario modeling (CMIP6)
+        </div>
+        """, unsafe_allow_html=True)
+
+# ===========================
+# TEMPERATURE TRENDS
+# ===========================
+elif page == "📈 Temperature Trends":
+    st.markdown('<h1 class="main-header">📈 How Temperatures Have Changed Over Time</h1>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-box">
+    <h3>Temporal Analysis: 62 Years of Global Warming</h3>
+    This section explores how global temperatures have evolved from 1961 to 2022, revealing
+    clear patterns of warming and—most critically—the acceleration of that warming over time.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    tab1, tab2, tab3 = st.tabs(["📊 Overall Trends", "📈 Warming Acceleration", "📅 Decade-by-Decade"])
+
+    with tab1:
+        st.markdown('<div class="section-header">Temperature Distribution & Temporal Patterns</div>', unsafe_allow_html=True)
+
+        # Show univariate analysis
+        img_path = load_image("reports/figures/eda_univariate_temperature.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Statistical distribution of temperature changes across all countries and years")
+        else:
+            st.warning("Visualization not yet generated. Run the EDA notebook (04_eda_phase3.ipynb) to create this figure.")
+
+        st.markdown("""
+        **What These Plots Tell Us:**
+
+        **1. Distribution Shape (Histogram)**
+        - Slightly right-skewed: More extreme warm years than extreme cool years
+        - Mean (0.538°C) > Median (0.470°C): Confirms rightward skew
+        - Shows the shift from cooler early years to warmer recent years
+
+        **2. Outliers (Box Plot)**
+        - Most extreme warming: +3.69°C (Russia 2020, Estonia 2020)
+        - Most extreme cooling: -2.06°C (rare, early period anomalies)
+        - ~99% of observations fall between -1.5°C and +2.5°C
+
+        **3. Data Quality (Q-Q Plot)**
+        - Reasonably normal distribution in the center
+        - Heavier tails than perfect normal distribution
+        - Indicates real climate extremes, not just measurement error
+        """)
+
+        st.markdown("---")
+
+        # Show temporal trends
+        img_path = load_image("reports/figures/eda_temporal_trends.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Year-by-year global average temperature change (1961-2022)")
+        else:
+            st.warning("Temporal trends visualization not yet generated.")
+
+        st.markdown("""
+        **Key Observations from Temporal Analysis:**
+
+        **The Clear Upward Trend:**
+        - 1960s-1970s: Temperatures fluctuate around baseline (0°C)
+        - 1980s: Warming becomes clearly visible
+        - 1990s-2000s: Consistent positive anomalies
+        - 2010s-2020s: Every year significantly above baseline
+
+        **Variability Over Time:**
+        - Early years (1961-1980): High variability, both warm and cool years
+        - Recent years (2000-2022): Lower variability, consistently warm
+        - Suggests "new normal" has shifted upward
+
+        **Record-Breaking Years:**
+        - All of the top 10 warmest years occurred after 2010
+        - 2016, 2020, 2019, 2022 among hottest recorded
+        - Pattern: Each decade warmer than the previous
+        """)
 
     with tab2:
-        st.markdown('<div class="section-header">The Data Behind the Groups</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Accelerating Warming: Not Just Getting Warmer, Getting Faster</div>', unsafe_allow_html=True)
+
+        # Show bivariate analysis
+        img_path = load_image("reports/figures/regression_bivariate_analysis.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Linear vs quadratic fit showing acceleration of warming")
+        else:
+            st.warning("Regression analysis visualization not yet generated.")
 
         st.markdown("""
-        **How we identified these four groups:**
+        <div class="warning-box">
+        <h4>🚨 Critical Finding: Warming is Accelerating</h4>
+        The most important discovery from this analysis isn't just that temperatures are rising—
+        it's that the <strong>rate</strong> of warming is increasing. The planet is warming faster now
+        than it was 60 years ago.
+        </div>
+        """, unsafe_allow_html=True)
 
-        When we plot countries based on their emissions, renewable energy adoption, climate vulnerability,
-        and economic development, four distinct clusters emerge clearly. Countries within each group share
-        similar challenges and characteristics.
-
-        **Key differences between groups:**
-
-        **Emissions per Capita:**
-        - Major Emitters: 15-40 tons CO₂ per person per year
-        - Green Leaders: 2-8 tons per person
-        - Vulnerable Nations: 0.5-3 tons per person
-        - Crossroads Countries: 3-8 tons per person (rising rapidly)
-
-        **Climate Vulnerability:**
-        - Vulnerable Nations: Extreme (sea level rise, cyclones)
-        - Crossroads Countries: High (agriculture-dependent)
-        - Major Emitters: Moderate (have resources to adapt)
-        - Green Leaders: Low to Moderate (prepared, resilient)
-
-        **Renewable Energy Adoption:**
-        - Green Leaders: 60-100% of energy from renewables
-        - Vulnerable Nations: 20-50% (often necessity, not choice)
-        - Crossroads Countries: 10-30% (growing)
-        - Major Emitters: 10-40% (varies widely)
-
-        **Economic Capacity for Action:**
-        - Major Emitters: High (can afford green transition)
-        - Green Leaders: High (already investing heavily)
-        - Crossroads Countries: Moderate (limited resources, competing priorities)
-        - Vulnerable Nations: Low (need external support)
-        """)
-
-        st.info("Detailed visualizations showing country groupings will appear here after running the clustering analysis.")
-
-        st.markdown("""
-        **Why these groups matter:**
-
-        This isn't just academic categorization—it reveals fundamental inequities:
-        - Those who emit the most can best afford to adapt
-        - Those who emit the least suffer the worst impacts
-        - Some nations are already showing the way forward
-        - The majority are at a crossroads, with their choice determining our collective future
-        """)
-
-    with tab3:
-        st.markdown('<div class="section-header">Tailored Solutions: What Each Group Needs</div>', unsafe_allow_html=True)
-
-        st.markdown("""
-        **The key insight: One-size-fits-all won't work. Each group needs different support.**
-        """)
+        st.markdown("---")
 
         col1, col2 = st.columns(2)
 
         with col1:
+            st.markdown("**Warming Rate in 1961**")
+            st.metric("Rate", "0.006°C/year", "")
+            st.caption("Very slow, barely detectable")
+
+            st.markdown("**Per Decade**")
+            st.metric("", "0.06°C", "")
+
+        with col2:
+            st.markdown("**Warming Rate in 2022**")
+            st.metric("Rate", "0.047°C/year", "+683%")
+            st.caption("Nearly 8x faster!")
+
+            st.markdown("**Per Decade**")
+            st.metric("", "0.47°C", "8x increase")
+
+        st.markdown("---")
+
+        st.markdown("**What Causes Acceleration?**")
+
+        st.markdown("""
+        The quadratic (curved) trend line fits the data better than a straight line,
+        indicating genuine acceleration. Possible reasons:
+
+        1. **Cumulative Emissions**: Greenhouse gases accumulate in atmosphere
+        2. **Feedback Loops**:
+           - Melting ice → less sunlight reflected → more warming
+           - Thawing permafrost → releases more CO₂ → more warming
+        3. **Increased Emission Rates**: Industrial activity has intensified
+        4. **Ocean Heat Lag**: Oceans releasing stored heat
+
+        **Mathematical Evidence:**
+        - Linear model R² (test): -1.43 (poor fit, underestimates recent warming)
+        - Quadratic model R² (test): 0.51 (much better fit)
+        - Positive quadratic coefficient: +0.000338 (confirms acceleration)
+
+        This means a **simple linear projection underestimates future warming**—the curve
+        is bending upward, not staying straight.
+        """)
+
+    with tab3:
+        st.markdown('<div class="section-header">Decade-by-Decade Breakdown</div>', unsafe_allow_html=True)
+
+        # Show decade analysis
+        img_path = load_image("reports/figures/eda_decade_analysis.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Average temperature change by decade")
+        else:
+            st.warning("Decade analysis visualization not yet generated.")
+
+        st.markdown("**Generational Climate Shifts:**")
+
+        # Decade comparison table
+        decade_data = {
+            'Decade': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s*'],
+            'Avg_Change': ['~0.0°C', '~0.0°C', '+0.2°C', '+0.4°C', '+0.7°C', '+1.0°C', '+1.3°C'],
+            'Description': [
+                'Baseline conditions',
+                'Slight cooling trend',
+                'Warming becomes detectable',
+                'Clear warming signal',
+                'Rapid acceleration begins',
+                'Consistently warm years',
+                'Every year above 1°C'
+            ],
+            'Context': [
+                'Pre-acceleration era',
+                'Natural variability dominant',
+                'Human signal emerges',
+                'Scientific consensus forms',
+                'Acceleration confirmed',
+                'Paris Agreement signed',
+                'Exceeding safe limits'
+            ]
+        }
+
+        st.dataframe(pd.DataFrame(decade_data), use_container_width=True, hide_index=True)
+        st.caption("*2020s includes 2020-2022 only (incomplete decade)")
+
+        st.markdown("---")
+
+        st.markdown("**Inter-Generational Perspective:**")
+
+        st.markdown("""
+        **Someone born in 1961** experienced:
+        - **Age 0-20 (1961-1981)**: Climate similar to historical norms, minor fluctuations
+        - **Age 20-40 (1981-2001)**: Gradual warming, +0.2-0.4°C, barely noticeable
+        - **Age 40-60 (2001-2021)**: Rapid warming, +0.7-1.2°C, major disruptions
+        - **Age 61+ (2021-now)**: Every year exceeds 1°C warming, "new normal"
+
+        **Someone born in 2020** will experience:
+        - **Age 0-10 (2020-2030)**: +1.5-2°C warming (projected), extreme as baseline
+        - **Age 10-30 (2030-2050)**: Potentially +2-3°C, unprecedented conditions
+        - **Lifetime normal**: What previous generations called "catastrophic"
+
+        **The Climate You're Born Into:**
+        - 1960s child: Grew up in stable climate, saw it deteriorate
+        - 2000s child: Never knew stable climate, adapts to chaos
+        - 2020s child: Extreme weather is normal, doesn't know "cool" summers
+
+        This is why urgency matters—each passing decade, the problem compounds and
+        the "normal" shifts further into dangerous territory.
+        """)
+
+# ===========================
+# GEOGRAPHIC PATTERNS
+# ===========================
+elif page == "🌍 Geographic Patterns":
+    st.markdown('<h1 class="main-header">🌍 Regional Warming: Who\'s Affected Most?</h1>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-box">
+    <h3>Geographic Heterogeneity</h3>
+    Climate change is a global phenomenon, but its impacts are far from uniform. Some regions
+    are warming 3-4 times faster than the global average, while others experience more moderate changes.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    tab1, tab2, tab3 = st.tabs(["🏆 Top/Bottom Countries", "🗺️ Regional Patterns", "🔍 Case Studies"])
+
+    with tab1:
+        st.markdown('<div class="section-header">Countries by Average Warming (1961-2022)</div>', unsafe_allow_html=True)
+
+        # Show top countries visualization
+        img_path = load_image("reports/figures/eda_top_countries.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Top 15 highest and lowest warming countries (countries with at least 40 years of data)")
+        else:
+            st.warning("Top countries visualization not yet generated.")
+
+        st.markdown("---")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("**🔥 Fastest Warming Countries**")
             st.markdown("""
-            **For Major Emitters - Deep, Fast Cuts Required:**
+            Top warming nations (62-year average):
 
-            **What they must do:**
-            - Cut emissions by 50-80% by 2030
-            - Phase out coal power within this decade
-            - Electrify transportation and heating rapidly
+            1. **Estonia** (~1.2°C average)
+            2. **Lithuania** (~1.2°C)
+            3. **Latvia** (~1.2°C)
+            4. **Belarus** (~1.1°C)
+            5. **Russia** (~1.1°C)
 
-            **How to get there:**
-            - Carbon pricing: Make pollution expensive
-            - Massive renewable energy investment
-            - End fossil fuel subsidies (often hundreds of billions per year)
-            - Retrofit buildings for energy efficiency
+            **Pattern:** Concentrated in Eastern Europe and Northern Asia
 
-            **Their moral obligation:**
-            - Finance climate adaptation in vulnerable nations
-            - Transfer green technology to developing countries
-            - Lead by example—their success makes global action credible
+            **Common Features:**
+            - High latitudes (45°N - 70°N)
+            - Continental climates
+            - Proximity to Arctic region
+            - Large landmasses
 
-            **Business opportunities:**
-            - Green tech manufacturing dominates future economy
-            - First movers in clean energy capture massive markets
-            - Climate solutions industry worth trillions
-            """)
-
-            st.markdown("""
-            **For Vulnerable Nations - Adaptation & Survival:**
-
-            **What they need immediately:**
-            - Sea walls, flood defenses, elevated infrastructure
-            - Early warning systems for extreme weather
-            - Climate-resilient crop varieties
-            - Freshwater protection and desalination
-
-            **Financial reality:**
-            - Need hundreds of billions in adaptation funds
-            - Can't afford it alone—require international support
-            - "Loss and damage" compensation for unavoidable impacts
-
-            **Long-term strategies:**
-            - Regional climate migration planning
-            - Economic diversification away from vulnerable sectors
-            - Diplomatic pressure on major emitters
-            - Insurance mechanisms for climate disasters
-
-            **Why it's urgent:**
-            - Some nations have <20 years before uninhabitable
-            - Each delayed year means more permanent damage
-            - Climate refugees will number in the millions
+            **Why So Extreme:**
+            - **Arctic amplification**: High latitudes warm 2-3x faster
+            - **Ice-albedo feedback**: Less snow/ice → less reflection → more heat absorbed
+            - **Continental effect**: Land heats faster than oceans
             """)
 
         with col2:
+            st.markdown("**❄️ Slowest Warming Countries**")
             st.markdown("""
-            **For Green Leaders - Scale and Share Success:**
+            Lowest warming nations (62-year average):
 
-            **What they're already doing right:**
-            - Proving clean energy works at scale
-            - Maintaining high quality of life with low emissions
-            - Developing technologies others can use
+            - **Kiribati** (~0.1°C average)
+            - **Nauru** (~0.1°C)
+            - **Tuvalu** (~0.2°C)
+            - **Solomon Islands** (~0.2°C)
+            - **Papua New Guinea** (~0.2°C)
 
-            **Next level challenges:**
-            - Achieve true carbon neutrality (not just offset)
-            - Export solutions globally, not just domestically
-            - Support other nations' transitions with expertise
-            - Push for more ambitious global targets
+            **Pattern:** Small Pacific island nations
 
-            **Their strategic value:**
-            - Living laboratories for what's possible
-            - Diplomatic leaders in climate negotiations
-            - Source of green technology innovation
-            - Proof that climate action doesn't require sacrifice
+            **Common Features:**
+            - Tropical locations (near equator)
+            - Small land area, surrounded by ocean
+            - Maritime climate
+            - Low latitudes
 
-            **How they can help most:**
-            - Open-source successful policy approaches
-            - Provide training and capacity building
-            - Invest in climate solutions for developing nations
-            - Use diplomatic influence for stronger global action
-            """)
-
-            st.markdown("""
-            **For Crossroads Countries - The Critical Choice:**
-
-            **The fork in the road:**
-            - **Path 1:** Repeat dirty industrialization (locks in decades of high emissions)
-            - **Path 2:** Leapfrog to clean development (achieves growth without climate disaster)
-
-            **Why Path 2 is now viable:**
-            - Solar and wind now cheaper than coal in most places
-            - Battery storage costs dropped 90% in 10 years
-            - Green technology prices falling while fossil fuels volatile
-
-            **What they need to succeed:**
-            - Access to affordable green finance
-            - Technology transfer from developed nations
-            - Technical expertise and capacity building
-            - Fair trade rules that don't punish green development
-
-            **The stakes:**
-            - Home to 5+ billion people
-            - Their choice determines if we meet climate goals
-            - If they go high-carbon, Paris Agreement impossible
-            - If they go clean, global transition achievable
-
-            **Co-benefits of green path:**
-            - Energy independence (no oil imports)
-            - Local job creation in renewable sector
-            - Cleaner air (fewer pollution deaths)
-            - Future-proof economy
+            **Why More Stable:**
+            - **Ocean buffering**: Water absorbs heat slowly, moderates temperature
+            - **Tropical location**: Less seasonal variation to amplify
+            - **Maritime effect**: Ocean temperatures more stable than land
+            - **Note**: Despite lower temperature rise, these nations face existential threats from sea-level rise (not measured in this dataset)
             """)
 
         st.markdown("---")
 
         st.markdown("""
-        **The Global Climate Deal We Need:**
+        <div class="warning-box">
+        <h4>⚠️ The Paradox of Vulnerability</h4>
+        <p>Notice a cruel irony: <strong>Small island nations showing the least warming are often most threatened
+        by climate change.</strong></p>
 
-        **Major Emitters commit to:**
-        - Massive emission cuts at home
-        - $100+ billion/year in climate finance
-        - Technology sharing with developing nations
+        <p><strong>Why?</strong> This dataset only measures temperature. These nations face:</p>
+        <ul>
+        <li>Sea level rise (existential threat)</li>
+        <li>Ocean acidification (coral reef death, fishing collapse)</li>
+        <li>Stronger cyclones/typhoons (catastrophic damage)</li>
+        <li>Saltwater intrusion into freshwater (drinking water crisis)</li>
+        </ul>
 
-        **Vulnerable Nations receive:**
-        - Guaranteed adaptation funding
-        - Loss and damage compensation
-        - Climate insurance mechanisms
+        <p><strong>Meanwhile:</strong> Countries showing highest warming (Russia, Canada) have:</p>
+        <ul>
+        <li>Resources to adapt (wealth, technology)</li>
+        <li>Vast territories to relocate within</li>
+        <li>Infrastructure to withstand temperature changes</li>
+        </ul>
 
-        **Green Leaders contribute:**
-        - Technical expertise and policy guidance
-        - Innovation in climate solutions
-        - Diplomatic leadership
+        <p>This underscores that <strong>temperature change alone doesn't capture full climate impact</strong>.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        **Crossroads Countries get:**
-        - Affordable access to green technology
-        - Financial support for clean development
-        - In return: commit to low-carbon growth path
+    with tab2:
+        st.markdown('<div class="section-header">Geographic Heterogeneity Analysis</div>', unsafe_allow_html=True)
 
-        **Why this framework matters:**
-        Everyone has a role. Success requires all four groups working together. Climate change
-        doesn't care about borders—we either solve it together or fail together.
+        # Show geographic heterogeneity visualization
+        img_path = load_image("reports/figures/eda_geographic_heterogeneity.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Relationship between country geography and temperature variability")
+        else:
+            st.warning("Geographic heterogeneity visualization not yet generated.")
+
+        st.markdown("**Does Country Size Affect Data Quality?**")
+
+        st.markdown("""
+        One limitation of this dataset is that temperature is aggregated at the **national level**.
+        This raises an important question: Do large, geographically diverse countries show more
+        variable temperature readings because they actually experience more diverse climates?
+
+        **Analysis Findings:**
+
+        **Large/Elongated Countries** (Russia, Canada, Chile, China):
+        - Show higher temperature variability over time
+        - National averages mask huge regional differences
+        - Example: Russia 2020 = +3.69°C national average
+          - Arctic Russia: +5-6°C warming
+          - Southern Russia: +2-3°C warming
+          - National figure is area-weighted average
+
+        **Small/Compact Countries** (Singapore, Luxembourg, Monaco):
+        - More stable temperature readings
+        - National average actually represents most of the country
+        - Less geographic diversity to mask
+
+        **Implication:**
+        - Treat large country data as "regional averages" rather than precise local conditions
+        - Small country data more reliable for local analysis
+        - For policy/planning in large countries, seek subnational climate data
+        """)
+
+    with tab3:
+        st.markdown('<div class="section-header">Case Studies: Contrasting Warming Patterns</div>', unsafe_allow_html=True)
+
+        # Show case studies visualization
+        img_path = load_image("reports/figures/eda_case_studies.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Temperature trajectories for different country categories")
+        else:
+            st.warning("Case studies visualization not yet generated.")
+
+        st.markdown("---")
+
+        st.markdown("**Case Study 1: Russia—Arctic Amplification**")
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            st.markdown("""
+            **Geography:**
+            - 17 million km² (largest country)
+            - Spans 11 time zones, 41° latitude
+            - 70% of land above 50°N latitude
+            - Massive Arctic/subarctic territory
+
+            **Warming Pattern:**
+            - 1961-1980: Fluctuating around baseline
+            - 1980-2000: Rapid warming begins
+            - 2000-2022: Extreme warming years
+            - 2020 peak: +3.69°C (hottest recorded)
+
+            **Why So Extreme:**
+            - Arctic amplification effect (2-3x global average)
+            - Permafrost thaw accelerates warming
+            - Loss of sea ice reduces Earth's reflectivity
+            - Continental interior far from moderating ocean influence
+            """)
+
+        with col2:
+            st.metric("62-Yr Avg", "+1.1°C", "3x global avg")
+            st.metric("2020 Peak", "+3.69°C", "Highest recorded")
+            st.metric("Arctic Regions", "+5-6°C", "In some areas")
+
+        st.markdown("---")
+
+        st.markdown("**Case Study 2: Chile—Geographic Complexity**")
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            st.markdown("""
+            **Geography:**
+            - 4,300 km long (north-south)
+            - Only 177 km wide (average)
+            - Spans 38° of latitude
+            - Atacama Desert (north) to Patagonia (south)
+
+            **Climate Zones in One Country:**
+            - **North**: Arid desert, extreme heat
+            - **Center**: Mediterranean, moderate
+            - **South**: Cold maritime, subpolar
+
+            **Data Challenge:**
+            - National average meaningless for local conditions
+            - North might be +2°C, South might be +0.5°C
+            - Single temperature obscures 10°C+ variation
+
+            **Warming Pattern:**
+            - High variability in national average
+            - Likely reflects shifting dominance of different climate zones year-to-year
+            """)
+
+        with col2:
+            st.metric("Length", "4,300 km", "N-S span")
+            st.metric("Width", "177 km", "Average")
+            st.metric("Lat Range", "38°", "Tropical to Antarctic")
+
+        st.markdown("---")
+
+        st.markdown("**Case Study 3: Kiribati—Island Stability (and Vulnerability)**")
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            st.markdown("""
+            **Geography:**
+            - 33 atolls and islands
+            - Total land area: 811 km²
+            - Scattered across 3.5 million km² of ocean
+            - Average elevation: 2 meters above sea level
+
+            **Warming Pattern:**
+            - Very low temperature warming: ~0.1°C average
+            - Ocean buffering keeps temperatures stable
+            - Little year-to-year variation
+
+            **The Paradox:**
+            - **Temperature impact**: Minimal (lowest in dataset)
+            - **Climate threat level**: EXISTENTIAL
+
+            **Why the Disconnect:**
+            - Sea level rise of 1-2 meters would submerge entire nation
+            - Ocean acidification destroying coral reefs (food source)
+            - This dataset **only** measures temperature—misses main threats
+            """)
+
+        with col2:
+            st.metric("Temp Change", "+0.1°C", "Lowest globally")
+            st.metric("Elevation", "2 meters", "Above sea level")
+            st.metric("Threat Level", "Extreme", "Sea level rise")
+
+        st.markdown("---")
+
+        st.markdown("""
+        <div class="info-box">
+        <h4>💡 Key Lesson from Case Studies</h4>
+        <p><strong>Temperature change alone doesn't tell the full climate story.</strong></p>
+
+        <ul>
+        <li><strong>Russia:</strong> High temperature change, high adaptive capacity</li>
+        <li><strong>Kiribati:</strong> Low temperature change, existential threat from other factors</li>
+        <li><strong>Chile:</strong> National average hides dramatic regional variation</li>
+        </ul>
+
+        <p>For comprehensive climate risk assessment, combine temperature data with:</p>
+        <ul>
+        <li>Sea level projections</li>
+        <li>Precipitation/drought patterns</li>
+        <li>Extreme weather frequency</li>
+        <li>Economic adaptive capacity</li>
+        <li>Geographic vulnerability</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ===========================
+# FUTURE PROJECTIONS
+# ===========================
+elif page == "🔮 Future Projections":
+    st.markdown('<h1 class="main-header">🔮 Where Are We Heading? Projections to 2030</h1>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="warning-box">
+    <h3>⚠️ Statistical Extrapolation vs Climate Modeling</h3>
+    <strong>Important:</strong> The projections below are <strong>statistical extrapolations</strong>
+    based on historical trends (1961-2022). They assume current patterns continue without major
+    policy interventions or unexpected natural events.
+
+    These are NOT comprehensive climate model outputs (like IPCC uses), but rather serve as
+    <strong>baseline scenarios</strong> for planning purposes—showing where we're headed if nothing changes.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    tab1, tab2, tab3 = st.tabs(["📊 Projection Models", "🎯 2030 Forecast", "💼 Implications"])
+
+    with tab1:
+        st.markdown('<div class="section-header">Two Models: Linear vs Accelerating Warming</div>', unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("**Model 1: Linear (Simple) Trend**")
+
+            # Show model 1 visualization
+            img_path = load_image("reports/figures/regression_model1_simple.png")
+            if img_path:
+                st.image(img_path, use_column_width=True)
+            else:
+                st.warning("Model 1 visualization not generated.")
+
+            st.markdown("""
+            **Assumption:** Warming continues at constant rate
+
+            **Formula:** `Temp = β₀ + β₁ × Year`
+
+            **Fitted Rate:** 0.023°C per year (0.23°C per decade)
+
+            **Test Performance:**
+            - R² = -1.43 (POOR fit on recent data)
+            - RMSE = 0.26°C
+
+            **Problem:**
+            - Significantly **underestimates** recent warming
+            - Doesn't capture acceleration
+            - Straight line can't match curved reality
+
+            **2030 Projection:** 1.37°C [0.85, 1.88]
+
+            **Conclusion:** Linear model is **inadequate**—warming
+            is not constant, it's speeding up.
+            """)
+
+        with col2:
+            st.markdown("**Model 2: Polynomial (Quadratic) Trend**")
+
+            # Show model 2 visualization
+            img_path = load_image("reports/figures/regression_model2_polynomial.png")
+            if img_path:
+                st.image(img_path, use_column_width=True)
+            else:
+                st.warning("Model 2 visualization not generated.")
+
+            st.markdown("""
+            **Assumption:** Warming is accelerating over time
+
+            **Formula:** `Temp = β₀ + β₁ × Year + β₂ × Year²`
+
+            **Fitted Rates:**
+            - 1961: 0.006°C/year (0.06°C/decade)
+            - 2022: 0.047°C/year (0.47°C/decade)
+            - **Acceleration: 8x faster!**
+
+            **Test Performance:**
+            - R² = 0.51 (MUCH better fit)
+            - RMSE = 0.12°C
+
+            **Advantage:**
+            - Captures the upward curve
+            - Matches recent data well
+            - Accounts for feedback loops
+
+            **2030 Projection:** 1.93°C [1.70, 2.16]
+
+            **Conclusion:** Quadratic model better represents
+            reality—supports **accelerating warming** hypothesis.
+            """)
+
+        st.markdown("---")
+
+        st.markdown("**Model Comparison:**")
+
+        comparison_data = {
+            'Metric': ['Test R² Score', 'Test RMSE', 'Captures Acceleration?', '2030 Projection', 'Confidence Interval (95%)', 'Best Use Case'],
+            'Linear Model': ['-1.43 (poor)', '0.26°C', 'No ❌', '1.37°C', '[0.85, 1.88]', 'Conservative lower bound'],
+            'Quadratic Model': ['0.51 (good)', '0.12°C', 'Yes ✅', '1.93°C', '[1.70, 2.16]', 'Most realistic scenario']
+        }
+
+        st.table(pd.DataFrame(comparison_data))
+
+        st.markdown("""
+        **Recommendation:** Use **quadratic model** for primary projections, as it:
+        1. Fits recent data much better (R² = 0.51 vs -1.43)
+        2. Captures observed acceleration
+        3. More accurate for near-term forecasts (2023-2030)
+        4. Aligns with climate science understanding of feedback loops
+        """)
+
+    with tab2:
+        st.markdown('<div class="section-header">2030 Temperature Projection</div>', unsafe_allow_html=True)
+
+        # Show future projections visualization
+        img_path = load_image("reports/figures/regression_future_projections.png")
+        if img_path:
+            st.image(img_path, use_column_width=True)
+            st.caption("Temperature projections through 2030 with confidence intervals")
+        else:
+            st.warning("Future projections visualization not generated.")
+
+        st.markdown("---")
+
+        # Key projections
+        st.markdown("**🎯 Primary Forecast (Quadratic Model)**")
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        col1.metric("2025 Projection", "1.61°C", "+0.05°C/yr")
+        col2.metric("2030 Projection", "1.93°C", "+0.06°C/yr")
+        col3.metric("Paris Agreement", "1.50°C", "Target exceeded")
+        col4.metric("Overshoot", "+0.43°C", "29% above target")
+
+        st.markdown("---")
+
+        # Year-by-year projections table
+        df_proj = load_temperature_projections()
+        if df_proj is not None:
+            st.markdown("**Year-by-Year Projections (2023-2030):**")
+
+            # Display with formatting
+            display_df = df_proj[['Year', 'Quadratic_Projection', 'Quadratic_CI_Lower', 'Quadratic_CI_Upper']].copy()
+            display_df.columns = ['Year', 'Projected Temp (°C)', '95% CI Lower', '95% CI Upper']
+
+            st.dataframe(
+                display_df.style.format({
+                    'Projected Temp (°C)': '{:.3f}',
+                    '95% CI Lower': '{:.3f}',
+                    '95% CI Upper': '{:.3f}'
+                }).background_gradient(subset=['Projected Temp (°C)'], cmap='YlOrRd'),
+                use_container_width=True,
+                hide_index=True
+            )
+
+            st.caption("Projections based on quadratic regression model trained on 1961-2012 data, validated on 2013-2022")
+
+        st.markdown("---")
+
+        st.markdown("**Paris Agreement Comparison:**")
+
+        st.markdown("""
+        The Paris Agreement (2015) set a goal to limit global warming to **+1.5°C** above
+        pre-industrial levels (roughly equivalent to our 1951-1980 baseline).
+
+        **Current Trajectory:**
+        - **2024**: Already at ~1.4°C (nearly at limit)
+        - **2030**: Projected 1.93°C (**+0.43°C over target**)
+        - **Trend**: Exceeding safe limit by 29%
+
+        **When Do We Cross 1.5°C?**
+        Based on quadratic model, the world crosses the 1.5°C threshold around **2027**
+        (±1 year uncertainty).
+
+        **What +1.93°C by 2030 Means:**
+        - Significantly higher than "safe" limit
+        - Increased extreme weather frequency
+        - Greater ecosystem disruption
+        - More challenging adaptation required
+        - Approaching 2°C "danger zone"
+
+        **Can This Be Avoided?**
+        These projections assume **business as usual**—no major policy changes or emission
+        reductions. Aggressive climate action could bend the curve downward, but time is running out.
+        """)
+
+    with tab3:
+        st.markdown('<div class="section-header">What 1.93°C Means in Practice</div>', unsafe_allow_html=True)
+
+        st.markdown("**Translation from Statistics to Reality:**")
+
+        st.markdown("""
+        A global average of +1.93°C might sound abstract. Here's what it means for different sectors:
+        """)
+
+        # Sector impacts
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("**🌾 Agriculture & Food Security**")
+            st.markdown("""
+            - **Crop yields**: 10-20% decline in tropical regions
+            - **Growing seasons**: Shift by 2-3 weeks
+            - **Water availability**: Increased drought frequency
+            - **Pests**: Expanded range, longer active seasons
+            - **Livestock**: Heat stress reduces productivity
+
+            **Action Needed:** Drought-resistant crops, irrigation infrastructure
+            """)
+
+            st.markdown("**🏗️ Infrastructure & Cities**")
+            st.markdown("""
+            - **Cooling demand**: 30-40% increase in peak summer
+            - **Power grids**: Strain from AC load, heat reduces efficiency
+            - **Roads/rail**: Buckling, thermal expansion damage
+            - **Buildings**: Designed for old climate now inadequate
+            - **Water systems**: Increased demand, supply challenges
+
+            **Action Needed:** Retrofit for heat, upgrade capacity
+            """)
+
+            st.markdown("**💧 Water Resources**")
+            st.markdown("""
+            - **Glaciers**: Accelerated melting → long-term shortages
+            - **Rivers**: Lower flows in summer, flash floods in storms
+            - **Groundwater**: Faster depletion from increased pumping
+            - **Quality**: Warmer water = more algae, bacteria
+
+            **Action Needed:** Storage, conservation, desalination
+            """)
+
+        with col2:
+            st.markdown("**🏥 Public Health**")
+            st.markdown("""
+            - **Heat-related illness**: 2-3x increase in hospitalizations
+            - **Disease vectors**: Mosquitoes, ticks expand range
+            - **Air quality**: More ozone, particulates in heat
+            - **Mental health**: Climate anxiety, displacement stress
+            - **Vulnerable groups**: Elderly, poor most affected
+
+            **Action Needed:** Early warning systems, cooling centers
+            """)
+
+            st.markdown("**🌲 Ecosystems & Biodiversity**")
+            st.markdown("""
+            - **Species extinction**: 15-20% at risk at 2°C
+            - **Coral reefs**: 70-90% lost (already happening)
+            - **Forests**: Increased wildfires, pest outbreaks
+            - **Ocean**: Acidification, reduced oxygen
+            - **Cascading effects**: Food web disruptions
+
+            **Action Needed:** Protected areas, corridors, restoration
+            """)
+
+            st.markdown("**💼 Economic & Business**")
+            st.markdown("""
+            - **Labor productivity**: Outdoor work 10-15% less efficient
+            - **Supply chains**: Disrupted by extreme weather
+            - **Insurance**: Premiums rise, some areas uninsurable
+            - **Real estate**: Coastal, flood-prone areas lose value
+            - **Tourism**: Altered seasons, damaged destinations
+
+            **Action Needed:** Climate risk assessment, diversification
+            """)
+
+        st.markdown("---")
+
+        st.markdown("**📋 Planning Scenarios for Decision-Makers:**")
+
+        scenarios = {
+            'Scenario': ['Optimistic', 'Most Likely', 'Pessimistic', 'Planning Recommendation'],
+            'Assumptions': [
+                'Aggressive climate policy + tech breakthroughs',
+                'Current trends continue (our projection)',
+                'Acceleration worsens, tipping points triggered',
+                'Conservative approach for risk management'
+            ],
+            '2030_Temperature': ['1.3-1.5°C', '1.7-2.2°C', '2.0-2.5°C', 'Plan for 2.0°C'],
+            'Probability': ['15%', '60%', '25%', 'Upper 75th percentile'],
+            'Action_Posture': ['Still urgent', 'Very urgent', 'Crisis mode', 'Prepare for worst, hope for best']
+        }
+
+        st.table(pd.DataFrame(scenarios))
+
+        st.markdown("---")
+
+        st.markdown("**🎯 Recommendations by Time Horizon:**")
+
+        st.markdown("""
+        **2025 (Immediate - 2 years):**
+        - ✅ Assess current infrastructure climate resilience
+        - ✅ Update building codes and design standards
+        - ✅ Establish heat emergency protocols
+        - ✅ Begin workforce climate training
+        - ✅ Climate-proof critical supply chains
+
+        **2030 (Near-term - 7 years):**
+        - ✅ Complete major infrastructure retrofits
+        - ✅ Achieve 50% renewable energy (to slow acceleration)
+        - ✅ Implement adaptive water management
+        - ✅ Relocate/protect vulnerable assets
+        - ✅ Full climate risk integration in all planning
+
+        **2050 (Long-term - 27 years):**
+        - ✅ Carbon-neutral operations
+        - ✅ Climate-resilient infrastructure fully deployed
+        - ✅ Adaptive systems operational
+        - ✅ Multi-scenario contingency plans active
+        - ✅ Continuous monitoring and updating
+        """)
+
+        st.markdown("---")
+
+        st.markdown("""
+        <div class="info-box">
+        <h4>💡 Key Takeaway</h4>
+        <p><strong>1.93°C by 2030 is not inevitable</strong>—it's what happens if current trends continue.</p>
+
+        <p><strong>Every fraction of a degree matters:</strong></p>
+        <ul>
+        <li>1.5°C: Challenging but manageable</li>
+        <li>1.7°C: Significantly harder</li>
+        <li>2.0°C: Very difficult adaptation</li>
+        <li>2.5°C+: Some impacts irreversible</li>
+        </ul>
+
+        <p><strong>The curve can still be bent</strong>—but the window for action narrows each year.
+        These projections are not destiny; they're a warning of what's ahead without major course correction.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ===========================
+# COUNTRY CLUSTERING PAGE
+# ===========================
+elif page == "🔍 Country Clustering":
+    st.markdown('<h1 class="main-header">🔍 Country Clustering: Identifying Warming Patterns</h1>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-box">
+    <h3>What is Clustering Analysis?</h3>
+    Using machine learning (K-means clustering), we grouped 212 countries into distinct segments based on
+    their warming patterns from 1961-2022. Each cluster represents countries with similar temperature trajectories,
+    enabling targeted climate adaptation strategies.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Load clustering data
+    clustering_df = load_clustering_results()
+
+    if clustering_df is not None:
+        st.markdown('<h2 class="section-header">📊 Cluster Overview</h2>', unsafe_allow_html=True)
+
+        # Display cluster distribution
+        cluster_counts = clustering_df['cluster_name'].value_counts()
+        col1, col2 = st.columns([1, 1])
+
+        with col1:
+            st.markdown("### Cluster Distribution")
+            for cluster_name, count in cluster_counts.items():
+                pct = (count / len(clustering_df)) * 100
+                st.metric(cluster_name, f"{count} countries", f"{pct:.1f}%")
+
+        with col2:
+            st.markdown("### Clustering Quality Metrics")
+            st.info("""
+            **Methodology:** K-means clustering with 6 features
+            - Average temperature change
+            - Temperature volatility
+            - Warming rate (trend)
+            - Recent period average (2010-2022)
+            - Change from early to recent period
+            - Warming acceleration
+            """)
+
+        st.markdown("---")
+
+        # Cluster Details
+        st.markdown('<h2 class="section-header">🎯 Cluster Profiles</h2>', unsafe_allow_html=True)
+
+        unique_clusters = clustering_df['cluster_name'].unique()
+
+        for cluster_name in unique_clusters:
+            cluster_data = clustering_df[clustering_df['cluster_name'] == cluster_name]
+
+            st.markdown(f"### {cluster_name}")
+
+            # Calculate cluster statistics
+            avg_temp = cluster_data['mean_temp'].mean()
+            avg_warming_rate = cluster_data['warming_rate'].mean()
+            avg_recent = cluster_data['recent_mean'].mean()
+            avg_acceleration = cluster_data['acceleration'].mean()
+
+            # Display cluster characteristics
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col1:
+                st.metric("Avg Temperature", f"{avg_temp:.3f}°C")
+            with col2:
+                st.metric("Warming Rate", f"{avg_warming_rate*10:.3f}°C/decade")
+            with col3:
+                st.metric("Recent Average", f"{avg_recent:.3f}°C")
+            with col4:
+                st.metric("Acceleration", f"{avg_acceleration:.5f}°C/year²")
+
+            # Display description
+            if 'cluster_description' in cluster_data.columns:
+                desc = cluster_data['cluster_description'].iloc[0]
+                st.markdown(f"**Description:** {desc}")
+
+            # Top countries in this cluster
+            st.markdown("**Top 10 countries by average warming:**")
+            top_countries = cluster_data.nlargest(10, 'mean_temp')[['country', 'mean_temp', 'warming_rate', 'recent_mean']]
+
+            # Display as table
+            st.dataframe(
+                top_countries.style.format({
+                    'mean_temp': '{:.3f}°C',
+                    'warming_rate': '{:.5f}°C/year',
+                    'recent_mean': '{:.3f}°C'
+                }),
+                use_container_width=True,
+                hide_index=True
+            )
+
+            st.markdown("---")
+
+        # Visualizations
+        st.markdown('<h2 class="section-header">📈 Visual Analysis</h2>', unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("### Clustering Quality Metrics")
+            img_path = load_image("reports/figures/clustering_optimal_k.png")
+            if img_path:
+                st.image(img_path, use_container_width=True)
+                st.caption("Multiple metrics used to determine optimal number of clusters")
+            else:
+                st.warning("Visualization not found. Run the clustering notebook to generate.")
+
+        with col2:
+            st.markdown("### 2D Cluster Visualization (PCA)")
+            img_path = load_image("reports/figures/clustering_pca_visualization.png")
+            if img_path:
+                st.image(img_path, use_container_width=True)
+                st.caption("Countries projected onto 2D space using Principal Component Analysis")
+            else:
+                st.warning("Visualization not found. Run the clustering notebook to generate.")
+
+        st.markdown("---")
+
+        st.markdown("### Feature Distributions by Cluster")
+        img_path = load_image("reports/figures/clustering_feature_distributions.png")
+        if img_path:
+            st.image(img_path, use_container_width=True)
+            st.caption("Box plots showing how different features vary across clusters")
+        else:
+            st.warning("Visualization not found. Run the clustering notebook to generate.")
+
+        # Business Recommendations
+        st.markdown("---")
+        st.markdown('<h2 class="section-header">💼 Strategic Recommendations by Cluster</h2>', unsafe_allow_html=True)
+
+        recommendations = {
+            "High-Impact Rapid Warmers": {
+                "priority": "🔴 URGENT ACTION REQUIRED",
+                "actions": [
+                    "Emergency climate adaptation planning (5-10 year horizon)",
+                    "Infrastructure stress-testing for +2-3°C scenarios",
+                    "Immediate investment in cooling infrastructure",
+                    "Water resource management crisis protocols",
+                    "Agricultural sector transformation (drought-resistant crops)"
+                ],
+                "investment": "HIGH: Climate adaptation (~2-5% GDP)",
+                "risk": "CRITICAL"
+            },
+            "High Temperature Accelerators": {
+                "priority": "🟠 HIGH PRIORITY",
+                "actions": [
+                    "Accelerated adaptation planning",
+                    "Enhanced monitoring systems",
+                    "Infrastructure upgrades for extreme temperatures",
+                    "Climate risk assessment updates",
+                    "Emergency response system enhancement"
+                ],
+                "investment": "HIGH: (~2-4% GDP)",
+                "risk": "HIGH"
+            },
+            "Fast-Accelerating Warmers": {
+                "priority": "🟠 HIGH PRIORITY",
+                "actions": [
+                    "Monitor acceleration trends closely",
+                    "Prepare for 1.5-2°C by 2030",
+                    "Retrofit existing infrastructure",
+                    "Update building codes and standards",
+                    "Develop climate contingency plans"
+                ],
+                "investment": "MODERATE-HIGH: (~1-3% GDP)",
+                "risk": "HIGH"
+            },
+            "Recent Acceleration Group": {
+                "priority": "🟡 PROACTIVE PLANNING ESSENTIAL",
+                "actions": [
+                    "Monitor acceleration trends closely",
+                    "Prepare for 1.5-2°C by 2030",
+                    "Retrofit existing infrastructure",
+                    "Update building codes and standards",
+                    "Develop climate contingency plans"
+                ],
+                "investment": "MODERATE-HIGH: (~1-3% GDP)",
+                "risk": "HIGH"
+            },
+            "Steady Rapid Warmers": {
+                "priority": "🟡 PROACTIVE MEASURES NEEDED",
+                "actions": [
+                    "Consistent adaptation efforts",
+                    "Long-term infrastructure planning",
+                    "Gradual system upgrades",
+                    "Regular climate impact assessments",
+                    "Community resilience programs"
+                ],
+                "investment": "MODERATE: (~1-2% GDP)",
+                "risk": "MODERATE-HIGH"
+            },
+            "Stable Low-Warming Group": {
+                "priority": "🟢 FOCUS ON NON-TEMPERATURE RISKS",
+                "actions": [
+                    "Sea level rise adaptation (if coastal/island)",
+                    "Ocean acidification mitigation",
+                    "Storm surge defenses",
+                    "Coral reef protection",
+                    "Climate migration planning"
+                ],
+                "investment": "MODERATE: (~1-2% GDP)",
+                "risk": "MODERATE (existential for small islands)"
+            },
+            "Moderate Warming Group": {
+                "priority": "🟢 STEADY ADAPTATION PATH",
+                "actions": [
+                    "Gradual infrastructure adaptation",
+                    "Long-term planning for 1-1.5°C",
+                    "Energy efficiency improvements",
+                    "Sustainable development integration",
+                    "Regional cooperation on climate"
+                ],
+                "investment": "MODERATE: (~0.5-1.5% GDP)",
+                "risk": "MODERATE"
+            }
+        }
+
+        for cluster_name in unique_clusters:
+            if cluster_name in recommendations:
+                rec = recommendations[cluster_name]
+
+                st.markdown(f"### {cluster_name}")
+                st.markdown(f"**Priority Level:** {rec['priority']}")
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.markdown("**Priority Actions:**")
+                    for action in rec['actions']:
+                        st.markdown(f"- {action}")
+
+                with col2:
+                    st.markdown(f"**Investment Needs:** {rec['investment']}")
+                    st.markdown(f"**Risk Level:** {rec['risk']}")
+
+                st.markdown("---")
+
+        # Search functionality
+        st.markdown('<h2 class="section-header">🔎 Find Your Country</h2>', unsafe_allow_html=True)
+
+        country_search = st.selectbox(
+            "Select a country to see its cluster assignment:",
+            options=sorted(clustering_df['country'].unique())
+        )
+
+        if country_search:
+            country_info = clustering_df[clustering_df['country'] == country_search].iloc[0]
+
+            st.markdown(f"### {country_info['country']}")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown(f"**Cluster:** {country_info['cluster_name']}")
+                st.markdown(f"**Description:** {country_info['cluster_description']}")
+
+                st.markdown("**Warming Metrics:**")
+                st.markdown(f"- Average temperature change: **{country_info['mean_temp']:.3f}°C**")
+                st.markdown(f"- Warming rate: **{country_info['warming_rate']*10:.3f}°C/decade**")
+                st.markdown(f"- Recent average (2010-2022): **{country_info['recent_mean']:.3f}°C**")
+                st.markdown(f"- Temperature volatility: **{country_info['std_temp']:.3f}°C**")
+
+            with col2:
+                st.markdown("**Trend Analysis:**")
+                st.markdown(f"- Early period (1961-1980): **{country_info['early_mean']:.3f}°C**")
+                st.markdown(f"- Change from early to recent: **{country_info['period_change']:.3f}°C**")
+                st.markdown(f"- Warming acceleration: **{country_info['acceleration']:.5f}°C/year²**")
+
+                # Similar countries
+                same_cluster = clustering_df[
+                    (clustering_df['cluster_name'] == country_info['cluster_name']) &
+                    (clustering_df['country'] != country_search)
+                ]
+
+                st.markdown(f"**Similar countries ({len(same_cluster)} in same cluster):**")
+                similar_top5 = same_cluster.nlargest(5, 'mean_temp')['country'].tolist()
+                for similar_country in similar_top5:
+                    st.markdown(f"- {similar_country}")
+
+    else:
+        st.warning("""
+        Clustering results not found. Please run the clustering notebook first:
+
+        `notebooks/07_clustering_phase5.ipynb`
+
+        This will generate the required clustering analysis and save results to `reports/clustering_results_named.csv`.
         """)
 
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666; padding: 2rem;'>
-    <p><strong>Understanding Climate Change Through Data</strong></p>
-    <p>62 years of global climate data • 195 countries • Real solutions for real challenges</p>
+    <p><strong>Global Temperature Change Analysis (1961-2022)</strong></p>
+    <p>Data Source: FAO Climate Indicators • 225 Countries • Statistical Analysis & Projections</p>
+    <p><em>This analysis focuses solely on temperature change. For comprehensive climate assessment,
+    combine with emissions, sea level, precipitation, and socioeconomic data.</em></p>
     <p>Fundamentos de la Ciencia de Datos | UAX (2025-26)</p>
 </div>
 """, unsafe_allow_html=True)
