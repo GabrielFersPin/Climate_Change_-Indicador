@@ -20,11 +20,7 @@ CLUSTER SIZES:
 - Cluster 2 (High-Impact Rapid Warmers): 22 countries (10.4%)
 
 KEY INSIGHTS:
-1. Countries show distinct warming patterns, not uniform global change
-2. Geographic and climate factors create natural groupings
-3. Different clusters require different adaptation strategies
-4. High-warming clusters concentrated in Arctic/continental regions
-5. Island nations show lower temperature change but face other risks
+The analysis demonstrates that global warming is not a uniform phenomenon; rather, countries exhibit distinct warming behaviors driven by geographic and climatic factors. High-latitude continental regions, particularly in the Arctic and Eastern Europe, form a cluster of rapid warmers, whereas island nations typically experience more moderate temperature increases due to oceanic thermal inertia. This heterogeneity implies that a "one-size-fits-all" approach is ineffective; adaptation strategies must be tailored to the specific warming profile—whether rapid acceleration or steady increase—of each cluster.
 
 DELIVERABLES:
 ✓ Clustering model with optimal k selection
