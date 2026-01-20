@@ -25,3 +25,8 @@ postgres_data/
 
 # REPORTS
 reports/*.pdf
+
+# PYTHON & ENVIRONMENT
+venv/
+__pycache__/
+*.pyc
