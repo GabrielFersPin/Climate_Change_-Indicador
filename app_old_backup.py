@@ -137,9 +137,6 @@ if page == "🏠 The Climate Crisis Today":
         - Countries that contributed least to emissions often suffer most
         - Small island nations face existential threats from rising seas
 
-        **Time Running Out**
-        - We're already seeing irreversible changes to ecosystems
-        - Window to limit warming to safe levels is rapidly closing
         """)
 
     with col2:
