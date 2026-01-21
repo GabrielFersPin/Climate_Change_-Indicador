@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import plotly.express as px
 
 # Page configuration
 st.set_page_config(
@@ -1313,6 +1314,47 @@ elif page == "🔍 Country Clustering":
     clustering_df = load_clustering_results()
 
     if clustering_df is not None:
+        # ---------------------------
+        # NEW: Interactive Map Section
+        # ---------------------------
+        st.markdown('### 🌍 Global Cluster Map')
+        
+        # Create choropleth map
+        fig_map = px.choropleth(
+            data_frame=clustering_df,
+            locations="iso3",
+            color="cluster_name",
+            hover_name="country",
+            hover_data={
+                "iso3": False,
+                "cluster_name": True,
+                "mean_temp": ":.2f",
+                "warming_rate": ":.4f",
+                "cluster_description": True
+            },
+            projection="natural earth",
+            title="Countries Colored by Climate Change Cluster",
+            height=600,
+            color_discrete_sequence=px.colors.qualitative.Bold  # Distinct colors for clusters
+        )
+        
+        fig_map.update_layout(
+            margin={"r":0,"t":40,"l":0,"b":0},
+            legend_title_text='Cluster Group',
+            legend=dict(
+                yanchor="top",
+                y=0.99,
+                xanchor="left",
+                x=0.01,
+                bgcolor="rgba(255, 255, 255, 0.8)"
+            )
+        )
+        
+        st.plotly_chart(fig_map, use_container_width=True)
+        
+        st.markdown("---")
+        # ---------------------------
+
         st.markdown('<h2 class="section-header">📊 Cluster Overview</h2>', unsafe_allow_html=True)
 
         # Display cluster distribution
