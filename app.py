@@ -119,8 +119,8 @@ if page == "🏠 Overview":
         st.metric("📈 Warming Rate (2022)", "+0.047°C/year", "8x faster than 1961")
         st.caption("Rate is accelerating")
     with col4:
-        st.metric("🔮 2030 Projection", "+1.93°C", "Above baseline")
-        st.caption("Exceeds Paris Agreement target")
+        st.metric("🔮 2030 Projection", "+1.93°C", "Based on current trends")
+        st.caption("Quadratic model projection")
 
     st.markdown("---")
 
@@ -140,7 +140,7 @@ if page == "🏠 Overview":
         Clustering analysis identifies that warming is most intense in **Arctic and continental regions**. These areas form distinct "high-warming" clusters that are heating up significantly faster than the global baseline.
 
         **4. 2030 Projection: 1.93°C**
-        Based on the quadratic trend ($R^2 > 0.9$), the model projects a global temperature anomaly of **+1.93°C by 2030**. This trajectory surpasses the Paris Agreement's 1.5°C threshold, assuming current trends continue without major intervention.
+        Based on the quadratic trend ($R^2 > 0.9$), the model projects a global temperature anomaly of **+1.93°C by 2030**, assuming current trends continue without major intervention.
         """)
 
     with col2:
@@ -150,7 +150,7 @@ if page == "🏠 Overview":
         This analysis relies on temperature anomalies, which measure deviation from the 1951-1980 baseline average. A value of 0°C represents the baseline normal, while positive values indicate warming. For context, +1°C signifies a global shift that triggers major ecosystem disruptions.
 
         **Why This Matters:**
-        Seemingly small numbers like +1°C or +2°C have profound global consequences. A +1.5°C rise marks the "safe" limit defined by the Paris Agreement, while +2°C pushes the planet toward dangerous thresholds, and +3°C heralds catastrophic impacts.
+        Seemingly small numbers like +1°C or +2°C have profound global consequences. Warming of this magnitude triggers major ecosystem disruptions and requires urgent adaptation measures.
 
         **What Causes These Changes:**
         Although this dataset focuses on temperature metrics, the driving forces are well-established. Greenhouse gas emissions—primarily CO₂ and methane—are the main culprits, exacerbated by deforestation and industrial activity, with natural variability playing only a minor role. This analysis quantifies the *what* and *when* of this accelerating crisis.
@@ -663,8 +663,7 @@ elif page == "📈 Temperature Trends":
         - **Age 61+ (2021-now)**: Every year exceeds 1°C warming, "new normal"
 
         **Someone born in 2020** will experience:
-        - **Age 0-10 (2020-2030)**: +1.5-2°C warming (projected), extreme as baseline
-        - **Age 10-30 (2030-2050)**: Potentially +2-3°C, unprecedented conditions
+        - **Age 0-10 (2020-2030)**: +1.93°C warming (projected), extreme as baseline
         - **Lifetime normal**: What previous generations called "catastrophic"
 
         **The Climate You're Born Into:**
@@ -1095,8 +1094,8 @@ elif page == "🔮 Future Projections":
 
         col1.metric("2025 Projection", "1.61°C", "+0.05°C/yr")
         col2.metric("2030 Projection", "1.93°C", "+0.06°C/yr")
-        col3.metric("Paris Agreement", "1.50°C", "Target exceeded")
-        col4.metric("Overshoot", "+0.43°C", "29% above target")
+        col3.metric("95% CI Lower", "1.70°C", "Uncertainty range")
+        col4.metric("95% CI Upper", "2.16°C", "Worst case")
 
         st.markdown("---")
 
@@ -1123,27 +1122,21 @@ elif page == "🔮 Future Projections":
 
         st.markdown("---")
 
-        st.markdown("**Paris Agreement Comparison:**")
+        st.markdown("**Climate Impact Assessment:**")
 
         st.markdown("""
-        The Paris Agreement (2015) set a goal to limit global warming to **+1.5°C** above
-        pre-industrial levels (roughly equivalent to our 1951-1980 baseline).
+        Our model projects +1.93°C warming by 2030, which represents significant climate change.
 
         **Current Trajectory:**
-        - **2024**: Already at ~1.4°C (nearly at limit)
-        - **2030**: Projected 1.93°C (**+0.43°C over target**)
-        - **Trend**: Exceeding safe limit by 29%
-
-        **When Do We Cross 1.5°C?**
-        Based on quadratic model, the world crosses the 1.5°C threshold around **2027**
-        (±1 year uncertainty).
+        - **2024**: ~1.4°C above baseline
+        - **2030**: Projected 1.93°C above baseline
+        - **Trend**: Accelerating warming rate
 
         **What +1.93°C by 2030 Means:**
-        - Significantly higher than "safe" limit
         - Increased extreme weather frequency
         - Greater ecosystem disruption
         - More challenging adaptation required
-        - Approaching 2°C "danger zone"
+        - Approaching dangerous thresholds
 
         **Can This Be Avoided?**
         These projections assume **business as usual**—no major policy changes or emission
@@ -1234,16 +1227,16 @@ elif page == "🔮 Future Projections":
         st.markdown("**📋 Planning Scenarios for Decision-Makers:**")
 
         scenarios = {
-            'Scenario': ['Optimistic', 'Most Likely', 'Pessimistic', 'Planning Recommendation'],
+            'Scenario': ['Lower Bound', 'Most Likely', 'Upper Bound', 'Planning Recommendation'],
             'Assumptions': [
-                'Aggressive climate policy + tech breakthroughs',
+                'Model uncertainty (lower 95% CI)',
                 'Current trends continue (our projection)',
-                'Acceleration worsens, tipping points triggered',
+                'Model uncertainty (upper 95% CI)',
                 'Conservative approach for risk management'
             ],
-            '2030_Temperature': ['1.3-1.5°C', '1.7-2.2°C', '2.0-2.5°C', 'Plan for 2.0°C'],
-            'Probability': ['15%', '60%', '25%', 'Upper 75th percentile'],
-            'Action_Posture': ['Still urgent', 'Very urgent', 'Crisis mode', 'Prepare for worst, hope for best']
+            '2030_Temperature': ['1.70°C', '1.93°C', '2.16°C', 'Plan for 2.16°C'],
+            'Probability': ['2.5%', '95%', '2.5%', 'Upper 97.5th percentile'],
+            'Action_Posture': ['Monitor closely', 'Very urgent', 'Crisis mode', 'Prepare for worst case']
         }
 
         st.table(pd.DataFrame(scenarios))
@@ -1284,8 +1277,8 @@ elif page == "🔮 Future Projections":
 
         <p><strong>Every fraction of a degree matters:</strong></p>
         <ul>
-        <li>1.5°C: Challenging but manageable</li>
-        <li>1.7°C: Significantly harder</li>
+        <li>1.0°C: Major ecosystem changes</li>
+        <li>1.5°C: Significant adaptation challenges</li>
         <li>2.0°C: Very difficult adaptation</li>
         <li>2.5°C+: Some impacts irreversible</li>
         </ul>
@@ -1497,7 +1490,7 @@ elif page == "🔍 Country Clustering":
                 "priority": "🟠 HIGH PRIORITY",
                 "actions": [
                     "Monitor acceleration trends closely",
-                    "Prepare for 1.5-2°C by 2030",
+                    "Prepare for ~2°C by 2030",
                     "Retrofit existing infrastructure",
                     "Update building codes and standards",
                     "Develop climate contingency plans"
@@ -1509,7 +1502,7 @@ elif page == "🔍 Country Clustering":
                 "priority": "🟡 PROACTIVE PLANNING ESSENTIAL",
                 "actions": [
                     "Monitor acceleration trends closely",
-                    "Prepare for 1.5-2°C by 2030",
+                    "Prepare for ~2°C by 2030",
                     "Retrofit existing infrastructure",
                     "Update building codes and standards",
                     "Develop climate contingency plans"
@@ -1545,7 +1538,7 @@ elif page == "🔍 Country Clustering":
                 "priority": "🟢 STEADY ADAPTATION PATH",
                 "actions": [
                     "Gradual infrastructure adaptation",
-                    "Long-term planning for 1-1.5°C",
+                    "Long-term planning for gradual warming",
                     "Energy efficiency improvements",
                     "Sustainable development integration",
                     "Regional cooperation on climate"
