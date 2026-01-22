@@ -1462,89 +1462,37 @@ elif page == "🔍 Country Clustering":
         st.markdown('<h2 class="section-header">💼 Strategic Recommendations by Cluster</h2>', unsafe_allow_html=True)
 
         recommendations = {
-            "High-Impact Rapid Warmers": {
-                "priority": "🔴 URGENT ACTION REQUIRED",
+            "Low-Risk Countries": {
+                "priority": "🟢 MONITOR & MAINTAIN",
                 "actions": [
-                    "Emergency climate adaptation planning (5-10 year horizon)",
-                    "Infrastructure stress-testing for +2-3°C scenarios",
-                    "Immediate investment in cooling infrastructure",
-                    "Water resource management crisis protocols",
-                    "Agricultural sector transformation (drought-resistant crops)"
-                ],
-                "investment": "HIGH: Climate adaptation (~2-5% GDP)",
-                "risk": "CRITICAL"
-            },
-            "High Temperature Accelerators": {
-                "priority": "🟠 HIGH PRIORITY",
-                "actions": [
-                    "Accelerated adaptation planning",
-                    "Enhanced monitoring systems",
-                    "Infrastructure upgrades for extreme temperatures",
-                    "Climate risk assessment updates",
-                    "Emergency response system enhancement"
-                ],
-                "investment": "HIGH: (~2-4% GDP)",
-                "risk": "HIGH"
-            },
-            "Fast-Accelerating Warmers": {
-                "priority": "🟠 HIGH PRIORITY",
-                "actions": [
-                    "Monitor acceleration trends closely",
-                    "Prepare for ~2°C by 2030",
-                    "Retrofit existing infrastructure",
-                    "Update building codes and standards",
-                    "Develop climate contingency plans"
-                ],
-                "investment": "MODERATE-HIGH: (~1-3% GDP)",
-                "risk": "HIGH"
-            },
-            "Recent Acceleration Group": {
-                "priority": "🟡 PROACTIVE PLANNING ESSENTIAL",
-                "actions": [
-                    "Monitor acceleration trends closely",
-                    "Prepare for ~2°C by 2030",
-                    "Retrofit existing infrastructure",
-                    "Update building codes and standards",
-                    "Develop climate contingency plans"
-                ],
-                "investment": "MODERATE-HIGH: (~1-3% GDP)",
-                "risk": "HIGH"
-            },
-            "Steady Rapid Warmers": {
-                "priority": "🟡 PROACTIVE MEASURES NEEDED",
-                "actions": [
-                    "Consistent adaptation efforts",
-                    "Long-term infrastructure planning",
-                    "Gradual system upgrades",
-                    "Regular climate impact assessments",
-                    "Community resilience programs"
-                ],
-                "investment": "MODERATE: (~1-2% GDP)",
-                "risk": "MODERATE-HIGH"
-            },
-            "Stable Low-Warming Group": {
-                "priority": "🟢 FOCUS ON NON-TEMPERATURE RISKS",
-                "actions": [
+                    "Regular climate monitoring",
+                    "Gradual infrastructure upgrades",
+                    "Energy efficiency improvements",
+                    "Sustainable development practices",
+                    "Community resilience programs",
                     "Sea level rise adaptation (if coastal/island)",
                     "Ocean acidification mitigation",
-                    "Storm surge defenses",
-                    "Coral reef protection",
-                    "Climate migration planning"
-                ],
-                "investment": "MODERATE: (~1-2% GDP)",
-                "risk": "MODERATE (existential for small islands)"
-            },
-            "Moderate Warming Group": {
-                "priority": "🟢 STEADY ADAPTATION PATH",
-                "actions": [
-                    "Gradual infrastructure adaptation",
-                    "Long-term planning for gradual warming",
-                    "Energy efficiency improvements",
-                    "Sustainable development integration",
-                    "Regional cooperation on climate"
+                    "Storm surge defenses"
                 ],
                 "investment": "MODERATE: (~0.5-1.5% GDP)",
                 "risk": "MODERATE"
+            },
+            "High-Risk Countries": {
+                "priority": "🟠 HIGH PRIORITY - URGENT ACTION",
+                "actions": [
+                    "Accelerated adaptation planning",
+                    "Infrastructure upgrades for extreme temperatures",
+                    "Enhanced monitoring systems",
+                    "Climate risk assessment updates",
+                    "Emergency response system enhancement",
+                    "Retrofit existing infrastructure",
+                    "Update building codes and standards",
+                    "Develop climate contingency plans",
+                    "Emergency climate adaptation planning",
+                    "Water resource management crisis protocols"
+                ],
+                "investment": "HIGH: (~2-4% GDP)",
+                "risk": "HIGH"
             }
         }
 
