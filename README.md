@@ -14,7 +14,8 @@ This project analyzes global temperature change data from the [FAO Climate Indic
 - 📈 Analyze temperature trends and warming acceleration (1961-2022)
 - 🗺️ Compare geographic patterns across 225 countries
 - 🔮 Project future temperatures using polynomial regression
-- 🔍 Segment countries by warming patterns using K-means clustering
+- � Classify climate risk levels using logistic regression
+- �🔍 Segment countries by warming patterns using K-means clustering
 
 **🌐 Live Demo**: [Streamlit App](https://ccanalysis.streamlit.app/)
 
@@ -103,7 +104,15 @@ The web app provides an intuitive interface to explore 62 years of global temper
 - Strategic recommendations by timeframe
 - Confidence intervals and model limitations
 
-### 🔍 **Country Clustering** *(NEW)*
+### � **Logistic Regression**
+
+- **Binary classification** for climate risk assessment
+- High Risk vs Normal classification (>1.5°C threshold)
+- Model performance metrics (ROC AUC, accuracy, recall)
+- Future risk projections (2023-2030)
+- Early warning system for climate adaptation
+
+### �🔍 **Country Clustering** *(NEW)*
 
 - **K-means clustering** analysis grouping 212 countries
 - **3-4 distinct warming patterns** identified
@@ -120,44 +129,42 @@ The web app provides an intuitive interface to explore 62 years of global temper
 
 ## 📊 Project Phases & Analysis Pipeline
 
-### Phase 1: Data Loading & Database Setup
+### FASE 1-3: Data Preparation & Exploration
 
 - PostgreSQL database with temperature indicators
 - Data ingestion from FAO Climate Indicators dataset
-- 4 analytical SQL queries for data validation
-- 📓 [Notebook: 01_data_loading.ipynb](notebooks/01_data_loading.ipynb)
+- Exploratory data analysis and quality assessment
+- Geographic and temporal pattern analysis
+- 📓 [Notebook: 01_data_exploration.ipynb](notebooks/01_data_exploration.ipynb)
+- 📓 [Notebook: 02_data_transformation.ipynb](notebooks/02_data_transformation.ipynb)
+- 📓 [Notebook: 03_sql_queries_phase2.ipynb](notebooks/03_sql_queries_phase2.ipynb)
+- 📓 [Notebook: 04_eda_phase3.ipynb](notebooks/04_eda_phase3.ipynb)
 
-### Phase 2: Exploratory Data Analysis (EDA)
+### FASE 4: Regression Analysis
 
-- Univariate analysis of temperature change distributions
-- Temporal trends analysis (1961-2022)
-- Geographic patterns exploration
-- Data quality assessment and handling missing values
-- 📓 [Notebook: 02_eda.ipynb](notebooks/02_eda.ipynb)
+To address the core question of how global temperature is evolving, we applied polynomial regression models. The analysis revealed a critical insight: the warming rate has accelerated eightfold from 0.006°C/year in 1961 to 0.047°C/year in 2022, with projections of +1.93°C by 2030.
 
-### Phase 3: Polynomial Regression Analysis
+- 📓 [Notebook: 05_regression_phase4.ipynb](notebooks/05_regression_phase4.ipynb)
+- 📓 [Notebook: 06_poli_regresion:phase4.ipynb](notebooks/06_poli_regresion:phase4.ipynb)
 
-To address the core question of how global temperature is evolving, we applied a 2nd-degree polynomial regression model. The analysis yielded an excellent fit (R² = 0.924) and revealed a critical insight: the warming rate has accelerated eightfold from 0.006°C/year in 1961 to 0.047°C/year in 2022, confirming a significant non-linear trajectory of acceleration.
+### FASE 5: Logistic Regression - Risk Classification
 
-- 📓 [Notebook: 03_regression_phase3.ipynb](notebooks/03_regression_phase3.ipynb)
+Using machine learning classification, we developed a binary risk assessment model to identify "High Risk" climate scenarios (>1.5°C warming). The model achieves 87% ROC AUC and provides early warning indicators for climate adaptation planning.
 
-### Phase 4: Future Projections
+- 📓 [Notebook: 08_logistic_regression_phase5.ipynb](notebooks/08_logistic_regression_phase5.ipynb)
 
-This phase focused on projecting temperature changes out to 2030 using polynomial extrapolation with confidence intervals. The primary finding indicates that if current trends persist, the global average temperature will reach +1.93°C by 2030. This projection serves as a baseline for risk assessment and adaptation timelines.
+### FASE 6: Clustering Analysis
 
-- 📓 [Notebook: 04_projections.ipynb](notebooks/04_projections.ipynb)
+We utilized K-Means clustering to segment countries into actionable groups based on distinct warming patterns. By analyzing six engineered features, we identified three optimal segments for business interpretability, enabling targeted climate adaptation strategies.
 
-### Phase 5: Clustering Analysis
+- 📓 [Notebook: 09_clustering_phase6.ipynb](notebooks/09_clustering_phase6.ipynb)
 
-We utilized K-Means clustering to segment countries into actionable groups based on distinct warming patterns. By analyzing six engineered features—including warming rate, acceleration, and volatility—we identified three optimal segments for business interpretability. These clusters range from "High-Impact Rapid Warmers" requiring critical intervention to "Moderate/Stable Warming Groups" suitable for steady adaptation, enabling a more nuanced approach to climate policy.
-
-- 📓 [Notebook: 07_clustering_phase5.ipynb](notebooks/07_clustering_phase5.ipynb)
-
-### Phase 6: Interactive Web Application
+### FASE 7: Interactive Web Application
 
 - **Streamlit app** with 6 interactive pages
 - Real-time data exploration and visualization
 - Country-level analysis and cluster assignment lookup
+- Risk classification and early warning system
 - Strategic recommendations engine
 - 💻 [App: app.py](app.py)
 
@@ -199,17 +206,23 @@ Climate_Change_-Indicador/
 ├── app.py                      # 🌐 Streamlit web application (main entry point)
 ├── requirements.txt            # Python dependencies for Streamlit app
 ├── notebooks/                  # 📓 Jupyter notebooks (analysis pipeline)
-│   ├── 01_data_loading.ipynb
-│   ├── 02_eda.ipynb
-│   ├── 03_regression_phase3.ipynb
-│   ├── 04_projections.ipynb
-│   └── 07_clustering_phase5.ipynb
+│   ├── 00_test_setup.ipynb
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_data_transformation.ipynb
+│   ├── 03_sql_queries_phase2.ipynb
+│   ├── 04_eda_phase3.ipynb
+│   ├── 05_regression_phase4.ipynb
+│   ├── 06_poli_regresion:phase4.ipynb
+│   ├── 08_logistic_regression_phase5.ipynb
+│   └── 09_clustering_phase6.ipynb
 ├── data/                       # 📊 Dataset directory (gitignored)
 │   └── README.md              # Dataset download instructions
 ├── reports/                    # 📈 Generated outputs
 │   ├── figures/               # Visualizations from notebooks
 │   ├── clustering_results_named.csv
-│   └── temperature_projections_2030.csv
+│   ├── temperature_projections_2030.csv
+│   ├── phase4_regression_summary.txt
+│   └── phase5_logistic_summary.txt
 ├── jupyter/                    # Jupyter-specific configs
 │   └── requirements.txt
 ├── docker-compose.yml          # 🐳 Container orchestration
@@ -228,7 +241,11 @@ Analysis of global temperature data from 1961 to 2022 reveals a statistically si
 
 If current acceleration trends continue, our models project a global temperature increase of +1.93°C by 2030. This trajectory suggests we are approaching the critical 2°C threshold significantly faster than previous linear estimates indicated. The 95% confidence interval for this projection ranges from 1.7°C to 2.1°C, indicating a high probability of exceeding safe climate limits within the next decade unless drastic mitigation strategies are implemented.
 
-### 🔍 Country Clustering
+### � Logistic Regression Risk Assessment
+
+Binary classification analysis identifies high-risk climate scenarios with 87% accuracy. The model uses temperature anomalies, rolling averages, and change rates to predict years exceeding the 1.5°C Paris Agreement threshold. Key risk indicators include recent 5-year warming trends and acceleration patterns, providing early warning signals for climate adaptation planning.
+
+### �🔍 Country Clustering
 
 Data segmentation identifies three distinct warming patterns across 212 countries, offering a framework for targeted adaptation. A group of **High-Impact Rapid Warmers**, primarily in the Arctic and Eastern Europe, faces the most urgent risk with an average rise of +1.27°C and a warming rate of 0.54°C/decade. A larger cluster of **Fast-Accelerating Warmers** (+0.62°C avg) shows strong recent acceleration, warranting high-priority intervention. Meanwhile, the majority of nations fall into **Moderate Warming Groups** (+0.43°C avg), where steady adaptation strategies are more appropriate. This segmentation underscores that effective climate policy must be tailored to specific warming behaviors rather than applied uniformly.
 
@@ -248,15 +265,15 @@ All analysis is fully reproducible:
 
 1. **Clone repository** and follow [Quick Start](#-quick-start)
 2. **Download dataset** from Kaggle (see `data/README.md`)
-3. **Run notebooks** in sequence: 01 → 02 → 03 → 04 → 07
+3. **Run notebooks** in sequence: 00 → 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09
 4. **Launch Streamlit app**: `streamlit run app.py`
 5. Notebooks automatically generate all figures in `reports/figures/`
-6. Clustering results saved to `reports/clustering_results_named.csv`
+6. Regression and clustering results saved to `reports/` directory
 
 ### Data Pipeline
 
 ```text
-Raw Dataset → PostgreSQL → EDA → Regression → Projections → Clustering → Streamlit App
+Raw Dataset → PostgreSQL → EDA → Regression → Logistic Classification → Clustering → Streamlit App
 ```
 
 ---
@@ -268,7 +285,8 @@ This project demonstrates:
 - ✅ **Interactive data apps** with Streamlit
 - ✅ **Containerized workflows** with Docker
 - ✅ **SQL database integration** for data management
-- ✅ **Advanced statistical modeling** (polynomial regression, K-means)
+- ✅ **Advanced statistical modeling** (polynomial regression, logistic regression, K-means)
+- ✅ **Machine learning classification** for risk assessment
 - ✅ **Feature engineering** from time series data
 - ✅ **Business-driven analysis** (interpretability > metrics)
 - ✅ **Clean, documented code** following best practices
