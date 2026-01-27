@@ -510,6 +510,9 @@ elif page == "📈 Temperature Trends":
         - Reasonably normal distribution in the center
         - Heavier tails than perfect normal distribution
         - Indicates real climate extremes, not just measurement error
+
+        **Why both box plot and violin plot for the same variable?**
+        El box-plot para que se vean los outliers y el violin-plot para que se vea la densidad y forma de la distribución.
         """)
 
         st.markdown("---")
@@ -824,6 +827,9 @@ elif page == "🌍 Geographic Patterns":
         - Treat large country data as "regional averages" rather than precise local conditions
         - Small country data more reliable for local analysis
         - For policy/planning in large countries, seek subnational climate data
+
+        **Nota sobre la selección de países:**
+        He utilizado esta etiqueta en Russia, Canada, Chile, China para hacer una comparación con los más pequeños Singapore, Luxembourg, Monaco. Era solo un estudio de caso, por si los países variaban mucho la temperatura teniendo también en cuenta que habrían diversos tipos climaticos dentro de un propio país.
         """)
 
     with tab3:
